@@ -1,13 +1,19 @@
 import { useState } from "react";
+import { FiCalendar, FiClock } from "react-icons/fi";
+import { GoCheckCircle } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
+import { MdOutlineCancel } from "react-icons/md";
 
 interface Pet {
+  Id: string;
   Name: string;
   Type: string;
   Breed: string;
   Age: string;
+  Client: string;
   information: string | null;
 }
+
 function MyPets() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -15,31 +21,37 @@ function MyPets() {
   const [type, setType] = useState("");
   const [breed, setBreed] = useState("");
   const [age, setAge] = useState("");
+  const [id, setId] = useState("");
+    const [client, setClient] = useState("");
   const [info, setInfo] = useState("");
 
   const handleApply = () => {
     if (!name.trim()) return;
     else {
       const newPet: Pet = {
+        Id: id,
         Name: name,
         Type: type,
         Breed: breed,
         Age: age,
+        Client: client,
         information: info,
       };
       setPets([...pets, newPet]);
     }
+    setClient("");
     setName("");
     setType("");
     setBreed("");
     setAge("");
     setInfo("");
+    setId("");
     setOpen(false);
   };
 
-//   const handleDelete = (index: number) => {
-//     setPets(pets.filter((_, i) => i !== index));
-//   };
+  //   const handleDelete = (index: number) => {
+  //     setPets(pets.filter((_, i) => i !== index));
+  //   };
   return (
     <div className=" h-screen flex flex-col px-15">
       <div className="flex items-left justify-between mt-6 ">
@@ -55,84 +67,29 @@ function MyPets() {
         Manage your pets and bookings
       </h1>
       <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-100">
-              <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">DATE</th>
-              <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">TIME</th>
-              <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">STATUS</th>
-              <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">CLIENT</th>
-              <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">ACTIONS</th>
-            </tr>
-          </thead>
+        <thead>
+          <tr className="border-b border-gray-100">
+            <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">
+              ID
+            </th>
+            <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">
+              NAME
+            </th>
+            <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">
+              TYPE
+            </th>
+            <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">
+              BREED
+            </th>
+            <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-wide">
+              ACTIONS
+            </th>
+          </tr>
+        </thead>
 
-          <tbody>
-            {slots.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="text-center text-gray-400 text-sm py-10">
-                  No slots added yet. Click "Add Slot" to get started.
-                </td>
-              </tr>
-            ) : (
-              slots.map((slot) => (
-                <tr key={slot.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-
-                  <td className="px-6 py-5">
-                    <span className="flex items-center gap-2 font-bold text-sm">
-                      <FiCalendar className="text-gray-400" />
-                      {slot.date}
-                    </span>
-                  </td>
-
-                  <td className="px-6 py-5">
-                    <span className="flex items-center gap-2 text-sm text-gray-600">
-                      <FiClock className="text-gray-400" />
-                      {slot.time}
-                    </span>
-                  </td>
-
-                  <td className="px-6 py-5">
-                    {slot.status === "open" ? (
-                      <span className="flex items-center gap-1 bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-full w-fit">
-                        <MdOutlineCancel size={14} /> Open
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 bg-red-100 text-red-400 text-xs font-medium px-3 py-1 rounded-full w-fit">
-                        <GoCheckCircle size={14} /> Occupied
-                      </span>
-                    )}
-                  </td>
-
-                  <td className="px-6 py-5 text-sm text-gray-500">
-                    {slot.client ?? "-"}
-                  </td>
-
-                  <td className="px-6 py-5">
-                    {slot.status === "open" ? (
-                      <button
-                        onClick={() => handleRemove(slot.id)}
-                        className="text-sm text-gray-400 hover:text-red-500 transition-colors"
-                      >
-                        Remove Slot
-                      </button>
-                    ) : (
-                      <div className="flex gap-3">
-                        <button className="text-sm text-[#155dfc] font-medium hover:underline">
-                          View Details
-                        </button>
-                        <button
-                          className="text-sm text-red-500 font-medium hover:underline"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
-                  </td>
-
-                </tr>
-              ))
-            )}
+        <tbody>
           </tbody>
-        </table>
+      </table>
       {open && (
         <>
           <div className="fixed inset-0 flex items-center justify-center bg-black/50">
