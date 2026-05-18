@@ -26,21 +26,21 @@ function Navbar({active, setActive}:NavbarProps) {
         <h1 className="font-bold text-[18px]">PawPal Ghana</h1>
       </div>
       <div
-        className={`flex items-center w-30 rounded-md h-9 justify-center gap-2 cursor-pointer ${active === "dashboard" ? "bg-[#155dfc] text-white" : "text-gray-600"}`}
+        className={`flex items-center w-30 rounded-md h-9 justify-center gap-2 cursor-pointer ${active === "dashboard" ? "bg-[#dbeafe] text-[#155dfc]" : "text-gray-600"}`}
         onClick={() => setActive("dashboard")}
       >
         <LuLayoutDashboard />
         Dashboard
       </div>
       <div
-        className={`flex items-center w-35 rounded-md h-9 justify-center gap-2 cursor-pointer ${active === "groomers" ? "bg-[#155dfc] text-white" : "text-gray-600"}`}
+        className={`flex items-center w-35 rounded-md h-9 justify-center gap-2 cursor-pointer ${active === "groomers" ? "bg-[#dbeafe] text-[#155dfc]" : "text-gray-600"}`}
         onClick={() => setActive("groomers")}
       >
         <FaListUl />
         All Groomers
       </div>
       <div
-        className={`flex items-center w-27 rounded-md h-9 justify-center gap-2  cursor-pointer ${active === "discover" ? "bg-[#155dfc] text-white" : "text-gray-600"}`}
+        className={`flex items-center w-27 rounded-md h-9 justify-center gap-2  cursor-pointer ${active === "discover" ? "bg-[#dbeafe] text-[#155dfc]" : "text-gray-600"}`}
         onClick={() => setActive("discover")}
       >
         <IoLocationOutline />
