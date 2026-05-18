@@ -35,8 +35,8 @@ function Groomers() {
   },
 ];
   return (
-    <div className="pt-17 px-15">
-      <div className="mt-10 mb-6">
+    <div className=" px-15">
+      <div className="mt-5 mb-6">
         <h1 className="text-[24px] font-bold">All Groomers</h1>
         <p className="text-[12px] text-gray-500">Find and book a groomer near you</p>
       </div>
