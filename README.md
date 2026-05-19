@@ -109,7 +109,7 @@ flowchart TD
     J --> |POST /api/booking/bookings/| K(Booking Created - Pending Payment)
     
     K --> L[Initiate Momo Payment]
-    L --> |POST /api/momo/pay/| M(Momo Prompt sent to Phone)
+    L --> |POST /api/momo/pay/| M(Payment Processed - Simulated)
     M --> N{Wait for Payment Status}
     N --> |GET /api/momo/status/| O[Payment Success]
     N --> |GET /api/momo/status/| P[Payment Failed]
@@ -159,7 +159,14 @@ flowchart TD
    }
    ```
    *Why no phone number or amount?* The backend automatically extracts the exact amount from the groomer's service associated with the booking, preventing frontend tampering. It also identifies the payer directly from the JWT `Authorization` header.
-   After the endpoint is called, the user will receive a USSD prompt on their phone. The frontend should display a loading spinner or a "Please check your phone" screen while polling `GET /api/momo/status/<transaction_id>/` every few seconds to verify if the payment was successful.
+   
+   **IMPORTANT - Backend Simulation:** Right now, the backend is running a simulated payment environment. Because it's a simulation, we are bypassing the actual phone prompt step. 
+   
+   **How to build the UI for this:**
+   1. When you call `POST /api/momo/pay/`, immediately show a loading screen (e.g., "Processing Payment..."). 
+   2. You will get a `transaction.id` back in the response.
+   3. Set up a polling interval to hit `GET /api/momo/status/<transaction_id>/` every few seconds.
+   4. Even though no real USSD prompt is sent to a phone during this development phase, your UI should still wait for the status to change to `successful` or `failed` before redirecting the user to a Success/Failure page.
 
 4. **Map Integration:**
    For the `GET /api/map/nearby-groomers/` endpoint, you will likely need to request the user's geolocation via the browser (`navigator.geolocation`) and send their coordinates (latitude and longitude) as query parameters.
