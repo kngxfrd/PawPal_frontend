@@ -29,7 +29,7 @@ function Dashboard({
             </div>
             <div className="flex flex-col justify-center">
               <h1 className="text-sm text-gray-500">Total Bookings</h1>
-              <h1 className=" text-[24px] font-bold text-gray-800">{totalbookings} </h1>
+              <h1 className=" text-[22px] font-medium text-gray-800">{totalbookings} </h1>
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@ function Dashboard({
             </div>
             <div className="flex flex-col justify-center">
               <h1 className="text-sm text-gray-500">Total Amount</h1>
-              <h1 className="text-[24px] font-bold text-gray-800">{totalamount} </h1>
+              <h1 className="text-[22px] font-medium text-gray-800">{totalamount} </h1>
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@ function Dashboard({
             </div>
             <div className="flex flex-col justify-center">
               <h1 className="text-sm text-gray-500">Total Customers</h1>
-              <h1 className="text-[24px] font-bold text-gray-800 leading-tight">
+              <h1 className="text-[22px] font-medium text-gray-800 leading-tight">
                 {totalcustomers}
               </h1>
             </div>
@@ -64,6 +64,7 @@ function Dashboard({
         </div>
         <div className="rounded-xl shadow-sm p-6 w-110 mt-10">
           <h1 className="font-bold text-[16px] mb-4">Upcoming Bookings</h1>
+          
         </div>
       </div>
     </div>

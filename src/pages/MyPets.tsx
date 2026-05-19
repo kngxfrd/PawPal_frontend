@@ -2,7 +2,6 @@ import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { TfiTrash } from "react-icons/tfi";
 import { GoPencil } from "react-icons/go";
-import { LuPawPrint } from "react-icons/lu";
 
 interface Pet {
   Id: string;
@@ -32,6 +31,10 @@ function MyPets() {
       Age: Number(age),
       information: info,
     };
+
+     const updated = [...pets, newPet];
+  setPets(updated);
+  localStorage.setItem("pets", JSON.stringify(updated));
     setPets([...pets, newPet]);
     setName("");
     setType("");

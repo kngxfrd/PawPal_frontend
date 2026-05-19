@@ -1,6 +1,5 @@
 import { Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import { useState, useEffect } from "react";
-import { IoLocationOutline, IoSearchOutline } from "react-icons/io5";
 
 interface Location {
   lat: number;
@@ -53,7 +52,7 @@ function Discover() {
     lng: -0.187,
   });
   const [selected, setSelected] = useState<Groomer | null>(null);
-  const [search, setSearch] = useState("");
+  const [search] = useState("");
 
   useEffect(() => {
     if (navigator.geolocation) {

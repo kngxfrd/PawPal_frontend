@@ -1,5 +1,7 @@
 import { IoLocationOutline, IoMailOpenOutline } from "react-icons/io5";
 import { FiPhone, FiCalendar } from "react-icons/fi";
+import { useState } from "react";
+import AppointModal from "./AppointModal";
 
 interface GroomcardProps {
   name: string;
@@ -18,6 +20,9 @@ function Groomcard({
   email,
   openSlots,
 }: GroomcardProps) {
+  const [showModal, setShowModal] = useState(false);
+  const pets = JSON.parse(localStorage.getItem("pets") || "[]");
+  const petNames = pets.map((p: any) => p.Name);
   return (
     <div className="border border-gray-100 rounded-2xl shadow-sm p-6 flex flex-col gap-4 hover:shadow-md transition-shadow bg-white">
       <div className="flex justify-between items-start">
@@ -59,9 +64,26 @@ function Groomcard({
         </span>
       </div>
 
-      <button className="w-full bg-[#155dfc] hover:bg-blue-700 text-white rounded-xl h-10 text-sm font-medium transition-colors mt-auto">
+      <button
+        onClick={() => setShowModal(true)}
+        className="w-full bg-[#155dfc] hover:bg-blue-700 text-white rounded-xl h-10 text-sm font-medium transition-colors mt-auto"
+      >
         Book Appointment
       </button>
+
+      <AppointModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        groomerName={name}
+        pets={petNames}
+        availableSlots={[
+          { date: "2025-05-20", time: "09:00 AM" },
+          { date: "2025-05-20", time: "11:00 AM" },
+        ]}
+        onConfirm={(booking) => {
+          console.log("Booking confirmed:", booking);
+        }}
+      />
     </div>
   );
 }
