@@ -1,5 +1,6 @@
 import { Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import { useState, useEffect } from "react";
+import { IoLocationOutline, IoSearchOutline } from "react-icons/io5";
 
 interface Location {
   lat: number;
@@ -12,6 +13,8 @@ interface Groomer {
   address: string;
   lat: number;
   lng: number;
+  services?: string[];
+  openSlots?: number;
 }
 
 const dummyGroomers: Groomer[] = [
@@ -21,6 +24,8 @@ const dummyGroomers: Groomer[] = [
     address: "123 Carlton Street",
     lat: 5.6067,
     lng: -0.187,
+    services: ["Shaving", "Washing"],
+    openSlots: 3,
   },
   {
     id: 2,
@@ -28,6 +33,8 @@ const dummyGroomers: Groomer[] = [
     address: "45 Osu High Street",
     lat: 5.614,
     lng: -0.201,
+    services: ["Nail Trimming", "Bathing"],
+    openSlots: 5,
   },
   {
     id: 3,
@@ -35,6 +42,8 @@ const dummyGroomers: Groomer[] = [
     address: "78 Labone Crescent",
     lat: 5.595,
     lng: -0.175,
+    services: ["Tick Treatment", "Washing"],
+    openSlots: 0,
   },
 ];
 
@@ -44,6 +53,7 @@ function Discover() {
     lng: -0.187,
   });
   const [selected, setSelected] = useState<Groomer | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -54,81 +64,69 @@ function Discover() {
             lng: position.coords.longitude,
           });
         },
-        (error) => {
-          console.error("Location access denied:", error);
-        },
+        (error) => console.error("Location access denied:", error),
       );
     }
   }, []);
 
+  const filtered = dummyGroomers.filter((g) =>
+    g.name.toLowerCase().includes(search.toLowerCase()) ||
+    g.address.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className=" px-15">
-      <div className="mt-5 mb-6">
+    <div className="px-10 py-6">
+
+      <div className="mb-6">
         <h1 className="text-[24px] font-bold">Discover Groomers</h1>
-        <p className="text-[12px] text-gray-500">Find a groomer near you</p>
+        <p className="text-[12px] text-gray-400">Find a groomer near you</p>
       </div>
+    <div className=" gap-6">
 
-      <div className="w-full h-[500px] rounded-xl overflow-hidden shadow-md z-0 relative">
-        <Map
-          defaultCenter={currentLocation}
-          defaultZoom={13}
-          mapId="pawpal-map"
-        >
-
-          <Marker
-            position={currentLocation}
-            icon={{
-              path: (window as any).google?.maps?.SymbolPath?.CIRCLE,
-              scale: 10,
-              fillColor: "#155dfc",
-              fillOpacity: 1,
-              strokeColor: "white",
-              strokeWeight: 2,
-            }}
-          />
-
-
-          {dummyGroomers.map((groomer) => (
+        <div className="flex-1 h-[520px] rounded-2xl overflow-hidden shadow-sm border border-gray-100 z-0 relative">
+          <Map defaultCenter={currentLocation} defaultZoom={13} mapId="pawpal-map">
             <Marker
-              key={groomer.id}
-              position={{ lat: groomer.lat, lng: groomer.lng }}
-              onClick={() => setSelected(groomer)}
+              position={currentLocation}
+              icon={{
+                path: (window as any).google?.maps?.SymbolPath?.CIRCLE,
+                scale: 10,
+                fillColor: "#155dfc",
+                fillOpacity: 1,
+                strokeColor: "white",
+                strokeWeight: 2,
+              }}
             />
-          ))}
 
+            {filtered.map((groomer) => (
+              <Marker
+                key={groomer.id}
+                position={{ lat: groomer.lat, lng: groomer.lng }}
+                onClick={() => setSelected(groomer)}
+              />
+            ))}
 
-          {selected && (
-            <InfoWindow
-              position={{ lat: selected.lat, lng: selected.lng }}
-              onCloseClick={() => setSelected(null)}
-            >
-              <div className="p-1">
-                <p className="font-bold text-sm">{selected.name}</p>
-                <p className="text-xs text-gray-500">{selected.address}</p>
-                <button className="mt-2 text-xs text-white bg-[#155dfc] px-3 py-1 rounded-md">
-                  Book Appointment
-                </button>
-              </div>
-            </InfoWindow>
-          )}
-        </Map>
+            {selected && (
+              <InfoWindow
+                position={{ lat: selected.lat, lng: selected.lng }}
+                onCloseClick={() => setSelected(null)}
+              >
+                <div className="p-1 flex flex-col gap-1">
+                  <p className="font-bold text-sm">{selected.name}</p>
+                  <p className="text-xs text-gray-500">{selected.address}</p>
+                  <button className="mt-1 text-xs text-white bg-[#155dfc] px-3 py-1 rounded-md">
+                    Book Appointment
+                  </button>
+                </div>
+              </InfoWindow>
+            )}
+          </Map>
+        </div>
+
+        
+        
+        </div>
       </div>
-
-  
-      <div className="mt-8 flex flex-col gap-3 pb-10">
-        {dummyGroomers.map((groomer) => (
-          <div
-            key={groomer.id}
-            onClick={() => setSelected(groomer)}
-            className={`border rounded-lg p-4 shadow-sm cursor-pointer transition-colors
-              ${selected?.id === groomer.id ? "border-[#155dfc] bg-blue-50" : "border-gray-200 hover:border-[#155dfc]"}`}
-          >
-            <h2 className="font-bold">{groomer.name}</h2>
-            <p className="text-sm text-gray-500">{groomer.address}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+   
   );
 }
 

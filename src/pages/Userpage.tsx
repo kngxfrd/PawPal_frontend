@@ -25,7 +25,7 @@ function Userpage() {
             <Dashboard
               totalbookings={6}
               totalcustomers={7}
-              totalamount={3}
+              totalamount={"$300"}
             />
           )}
           {active === "mypets" && <MyPets />}

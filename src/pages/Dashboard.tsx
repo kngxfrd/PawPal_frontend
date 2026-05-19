@@ -5,7 +5,7 @@ import BookingsChart from "../components/Bookingcharts";
 
 interface GroomHeaderProps {
   totalbookings: number;
-  totalamount: number;
+  totalamount: string;
   totalcustomers: number;
 }
 function Dashboard({
@@ -14,7 +14,7 @@ function Dashboard({
   totalcustomers,
 }: GroomHeaderProps) {
   return (
-    <div className=" h-screen flex flex-col px-15">
+    <div className=" h-screen flex flex-col px-15 mb-50">
       <div className="flex flex-col items-left justify-center mt-6 ">
         <h1 className=" text-left text-[24px] font-bold">My Dashboard</h1>
         <h1 className="text-[12px] text-gray-500">
@@ -22,23 +22,40 @@ function Dashboard({
         </h1>
       </div>
       <div className="flex justify-between">
-        <div className="p-5 w-60 h-30 mt-6 rounded-lg shadow-md">
-          <h1 className="flex items-center gap-3">
-            <IoMdCheckmarkCircleOutline size={23} /> Total Bookings
-          </h1>
-          <h1 className="pt-3 text-[35px] font-bold">{totalbookings} </h1>
+        <div className="p-5 w-65 h-30 mt-6 rounded-lg shadow-md border-r-4 border-blue-500">
+          <div className="flex gap-3">
+            <div className=" flex items-center justify-center text-blue-500 bg-[#dbeafe] w-15 h-15 rounded-full">
+              <IoMdCheckmarkCircleOutline size={28} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <h1 className="text-sm text-gray-500">Total Bookings</h1>
+              <h1 className=" text-[24px] font-bold text-gray-800">{totalbookings} </h1>
+            </div>
+          </div>
         </div>
-        <div className="p-5 w-60 h-30 mt-6 rounded-lg shadow-md">
-          <h1 className="flex items-center gap-3">
-            <LuDollarSign size={23} /> Total Amount
-          </h1>
-          <h1 className="pt-3 text-[35px] font-bold">{totalamount} </h1>
+        <div className=" p-5 w-60 h-30 mt-6 rounded-lg shadow-md border-r-4 border-green-500">
+          <div className="flex gap-3">
+            <div className=" flex items-center justify-center text-green-500 bg-[#d1ffbd] w-15 h-15 rounded-full">
+              <LuDollarSign size={23} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <h1 className="text-sm text-gray-500">Total Amount</h1>
+              <h1 className="text-[24px] font-bold text-gray-800">{totalamount} </h1>
+            </div>
+          </div>
         </div>
-        <div className="p-5 w-60 h-30 mt-6 rounded-lg shadow-md">
-          <h1 className="flex items-center gap-3">
-            <FiUsers size={23} /> Total Customers
-          </h1>
-          <h1 className="pt-3 text-[35px] font-bold">{totalcustomers} </h1>
+        <div className="p-5 w-60 mt-6 rounded-lg shadow-md border-r-4 border-yellow-500">
+          <div className="flex gap-3">
+            <div className="flex items-center justify-center text-yellow-500 bg-[#ffffc5] w-15 h-15 rounded-full">
+              <FiUsers size={23} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <h1 className="text-sm text-gray-500">Total Customers</h1>
+              <h1 className="text-[24px] font-bold text-gray-800 leading-tight">
+                {totalcustomers}
+              </h1>
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex justify-between">
@@ -46,7 +63,7 @@ function Dashboard({
           <BookingsChart />
         </div>
         <div className="rounded-xl shadow-sm p-6 w-110 mt-10">
-          <h1 className="font-bold text-[16px] mb-4">Monthly Bookings</h1>
+          <h1 className="font-bold text-[16px] mb-4">Upcoming Bookings</h1>
         </div>
       </div>
     </div>

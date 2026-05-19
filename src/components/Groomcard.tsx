@@ -1,8 +1,5 @@
-import { IoLocationOutline } from "react-icons/io5";
-import { IoMailOpenOutline } from "react-icons/io5";
-import { FiPhone } from "react-icons/fi";
-import { FiCalendar } from "react-icons/fi";
-import { FaRegClock } from "react-icons/fa6";
+import { IoLocationOutline, IoMailOpenOutline } from "react-icons/io5";
+import { FiPhone, FiCalendar } from "react-icons/fi";
 
 interface GroomcardProps {
   name: string;
@@ -11,54 +8,60 @@ interface GroomcardProps {
   phone: string;
   email: string;
   openSlots: number;
-  occupiedSlots: number;
 }
 
-function Groomcard({ name, address, services, phone, email, openSlots, occupiedSlots }: GroomcardProps)  {
+function Groomcard({
+  name,
+  address,
+  services,
+  phone,
+  email,
+  openSlots,
+}: GroomcardProps) {
   return (
-    <div className="w-full h-80 border border-gray-200 rounded-xl shadow-sm py-3 pl-10 shadow-md">
-      <div className="flex gap-5">
-        <h1 className="text-[28px] font-bold">{name}</h1>
-        <p className="text-[15px] flex items-center gap-2 pt-1 text-gray-500">
-          <IoLocationOutline /> {address}
-        </p>
+    <div className="border border-gray-100 rounded-2xl shadow-sm p-6 flex flex-col gap-4 hover:shadow-md transition-shadow bg-white">
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-[20px] font-bold text-gray-800">{name}</h1>
+          <p className="text-sm flex items-center gap-1 text-gray-400 mt-1">
+            <IoLocationOutline size={14} /> {address}
+          </p>
+        </div>
+
+        <span
+          className={`text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1 shrink-0
+  ${openSlots > 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-400"}`}
+        >
+          <FiCalendar size={11} />
+          {openSlots > 0 ? `${openSlots} open` : "Full"}
+        </span>
       </div>
-      <div className="pt-3 flex gap-2 flex-wrap">
+
+      <hr className="border-0" />
+
+      <div className="flex gap-2 flex-wrap">
         {services.map((service) => (
           <span
             key={service}
-            className="px-4 h-8 rounded-3xl bg-[#dbeafe] text-[#2051e7] flex items-center justify-center"
+            className="px-3 h-7 rounded-full bg-blue-50 text-[#155dfc] text-xs font-medium flex items-center"
           >
             {service}
           </span>
         ))}
       </div>
 
-      <div className="flex flex-col gap-1 pt-2">
-        <h1 className="flex items-center gap-3 pt-2">
-          <FiPhone />
-          {phone}
-        </h1>
-        <h1 className="flex items-center gap-3">
-          <IoMailOpenOutline />
-          {email}
-        </h1>
+      <div className="flex gap-4 text-sm text-gray-500">
+        <span className="flex items-center gap-1">
+          <FiPhone size={13} /> {phone}
+        </span>
+        <span className="flex items-center gap-1">
+          <IoMailOpenOutline size={14} /> {email}
+        </span>
       </div>
-      <div className="flex gap-10 pt-3">
-        <div className="w-[25%] gap-30 h-15 bg-[#f0fdf4] text-[#008236] flex justify-left pl-3 items-center rounded-md">
-          <h1 className="flex items-center gap-3"><FiCalendar />  Open Slots</h1>
-          <h1 className="text-[24px] font-bold">{openSlots} </h1>
-        </div>
-        <div className="w-[25%] gap-25 h-15 bg-[#fef2f2] text-[#c10007] flex justify-left pl-3 items-center rounded-md">
-          <h1 className="flex items-center gap-3"><FaRegClock />  Occupied Slots</h1>
-          <h1 className="text-[24px] font-bold">{occupiedSlots} </h1>
-        </div>
-      </div>
-      <div className="flex items-center justify-left mt-5">
-        <button className="bg-[#155dfc] text-white rounded-md w-[55%] h-10">
-          Book Appointment
-        </button>
-      </div>
+
+      <button className="w-full bg-[#155dfc] hover:bg-blue-700 text-white rounded-xl h-10 text-sm font-medium transition-colors mt-auto">
+        Book Appointment
+      </button>
     </div>
   );
 }

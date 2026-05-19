@@ -1,4 +1,4 @@
-import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart,  } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const data = [
   { month: "Jan", bookings: 4 },
@@ -11,16 +11,31 @@ const data = [
 function BookingsChart() {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 w-110 mt-10">
-      <h1 className="font-bold text-[16px] mb-4">Monthly Bookings</h1>
+      <h2 className="font-bold text-[16px] mb-4">Monthly Bookings</h2>
 
-      <ResponsiveContainer width="100%" height={200}>
-  <LineChart data={data}>
-    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-    <XAxis />
-    <YAxis />
-    <Tooltip />
-  </LineChart>
-</ResponsiveContainer>
+      <ResponsiveContainer width="100%" height={300}>
+        <AreaChart data={data}>
+          <defs>
+            <linearGradient id="colorBookings" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%"  stopColor="#155dfc" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#155dfc" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+
+          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+          <YAxis tick={{ fontSize: 12 }} />
+          <Tooltip />
+
+          <Area
+            type="monotone"
+            dataKey="bookings"
+            stroke="#155dfc"
+            strokeWidth={2}
+            fill="url(#colorBookings)" 
+          />
+        </AreaChart>
+      </ResponsiveContainer>
     </div>
   );
 }

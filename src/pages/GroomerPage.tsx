@@ -1,7 +1,5 @@
 import { useState } from "react";
-import GroomHeader from "../components/GroomHeader";
 import { useAuth } from "../context/AuthContext";
-import GroomerDashboard from "./GroomerDashboard";
 
 function GroomerPage() {
   const { user } = useAuth();
