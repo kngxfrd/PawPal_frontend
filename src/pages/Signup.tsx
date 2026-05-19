@@ -2,134 +2,144 @@ import { useState } from "react";
 import { LuPawPrint } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { HiOutlineMail } from "react-icons/hi";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { FiUser, FiPhone } from "react-icons/fi";
 
 function Signup() {
   const { signup } = useAuth();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"pet_owner" | "groomer">("pet_owner");
   const [error, setError] = useState("");
+
   const handleSignup = () => {
     if (!fullName.trim() || !email.trim() || !password.trim()) {
       setError("All fields are required");
       return;
     }
     const err = signup(fullName, email, password, role);
-    if (err) {
-      setError(err);
-      return;
-    }
+    if (err) { setError(err); return; }
     navigate("/home");
   };
-  return (
-    <div>
-      <div className=" absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className=" flex flex-col items-center justify-center text-center w-100 h-140 border border-gray-200 rounded-lg py-6 bg-white shadow-lg">
-          <div className="flex items-center justify-center gap-1 cursor-pointer">
-            <LuPawPrint size={40} color="#155dfc" />
-            <h1 className="font-bold text-[25px]">PAWPAL GH</h1>
-          </div>
-          <div className="text-gray-400 text-[15px]">
-            <h1>REGISTER</h1>
-          </div>
-          {error && <p className="text-red-500 text-xs mb-2">{error}</p>}
 
-          <div className="flex gap-3 px-6 mt-3 w-full h-8">
-            <button
-              onClick={() => setRole("pet_owner")}
-              className={`flex-1 h-8 rounded-md border text-sm transition-colors
-                  ${
-                    role === "pet_owner"
-                      ? "border-[#155dfc] text-[#155dfc] bg-blue-50"
-                      : "border-gray-300 text-gray-500"
-                  }`}
-            >
-              Pet Owner
-            </button>
-            <button
-              onClick={() => setRole("groomer")}
-              className={`flex-1 h-8 rounded-md border text-sm transition-colors
-                  ${
-                    role === "groomer"
-                      ? "border-[#155dfc] text-[#155dfc] bg-blue-50"
-                      : "border-gray-300 text-gray-500"
-                  }`}
-            >
-              Groomer
-            </button>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-[420px] bg-white rounded-2xl shadow-md p-8 flex flex-col gap-5">
+
+        <div className="flex flex-col items-center gap-1">
+          <div className="flex items-center gap-2">
+            <LuPawPrint size={36} color="#155dfc" />
+            <h1 className="font-bold text-[24px]">PAWPAL GH</h1>
+          </div>
+          <p className="text-gray-400 text-sm">Create your account</p>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={() => setRole("pet_owner")}
+            className={`flex-1 h-10 rounded-xl border text-sm font-medium transition-colors
+              ${role === "pet_owner"
+                ? "border-[#155dfc] text-[#155dfc] bg-blue-50"
+                : "border-gray-200 text-gray-400 hover:border-gray-300"
+              }`}
+          >
+            Pet Owner
+          </button>
+          <button
+            onClick={() => setRole("groomer")}
+            className={`flex-1 h-10 rounded-xl border text-sm font-medium transition-colors
+              ${role === "groomer"
+                ? "border-[#155dfc] text-[#155dfc] bg-blue-50"
+                : "border-gray-200 text-gray-400 hover:border-gray-300"
+              }`}
+          >
+            Groomer
+          </button>
+        </div>
+
+        {error && (
+          <p className="text-red-500 text-xs bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+        )}
+
+
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-600">Full Name</label>
+            <div className="flex items-center gap-3 h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
+              <FiUser size={15} className="text-gray-400 shrink-0" />
+              <input
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="John Doe"
+                className="flex-1 bg-transparent text-sm outline-none"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="" className="text-left pl-6 text-sm pt-3">
-              Full Name
-            </label>
-            <input
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-              placeholder="Full Name"
-              className="w-85 h-12 rounded-md bg-gray-100 pl-4 mx-6 "
-            />
-
-            <label htmlFor="" className="text-left pl-6 text-sm pt-3">
-              Email
-            </label>
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              type="email"
-              placeholder="your@email.com"
-              className="w-85 h-12 rounded-md bg-gray-100 pl-4 mx-6 "
-            />
-            <label htmlFor="" className="text-left pl-6 text-sm pt-3">
-              Phone
-            </label>
-            <div className="flex px-6">
-              <div className="flex items-center bg-gray-100 rounded-md px-3 py-2 text-sm font-medium">
-                +233
-              </div>
+            <label className="text-sm font-medium text-gray-600">Email</label>
+            <div className="flex items-center gap-3 h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
+              <HiOutlineMail size={16} className="text-gray-400 shrink-0" />
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
                 type="email"
-                placeholder="244xxxxx"
-                className="w-65 h-12 rounded-md bg-gray-100 pl-4 mx-6 "
+                placeholder="your@email.com"
+                className="flex-1 bg-transparent text-sm outline-none"
               />
-            </div>
-            <label htmlFor="" className="text-left pl-6 text-sm pt-3">
-              Password
-            </label>
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              required
-              placeholder="••••••••••"
-              className="w-85 h-12 rounded-md bg-gray-100 pl-4 mx-6"
-            />
-            <p className="text-xs text-left pl-6 mt-1">Forgot Password?</p>
-          </div>
-          <div className="flex flex-col gap 6 pt-4 gap-2">
-            <div className="flex justify-center">
-              <button
-                onClick={handleSignup}
-                className="w-85 rounded-md bg-[#155dfc] text-white text-sm border border-[#6c63ff] h-9 "
-              >
-                Register
-              </button>
             </div>
           </div>
 
-          <div className="text-xs pt-3 flex flex-row justify-center gap-1">
-            <p>Already have an account?</p>
-            <button onClick={() => navigate("/login")}>
-              <u>Login</u>
-            </button>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-600">Phone</label>
+            <div className="flex items-center h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 gap-2 focus-within:border-[#155dfc]">
+              <FiPhone size={15} className="text-gray-400 shrink-0" />
+              <span className="text-sm font-medium text-gray-500 border-r border-gray-200 pr-2">+233</span>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                type="tel"
+                placeholder="244 xxx xxx"
+                className="flex-1 bg-transparent text-sm outline-none"
+              />
+            </div>
           </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-600">Password</label>
+            <div className="flex items-center gap-3 h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
+              <RiLockPasswordLine size={16} className="text-gray-400 shrink-0" />
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                placeholder="••••••••••"
+                className="flex-1 bg-transparent text-sm outline-none"
+              />
+            </div>
+          </div>
+
         </div>
+
+        <button
+          onClick={handleSignup}
+          className="w-full h-11 rounded-xl bg-[#155dfc] hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+        >
+          Create Account
+        </button>
+
+        <p className="text-xs text-center text-gray-400">
+          Already have an account?{" "}
+          <button
+            onClick={() => navigate("/login")}
+            className="text-[#155dfc] font-medium hover:underline"
+          >
+            Login
+          </button>
+        </p>
+
       </div>
     </div>
   );

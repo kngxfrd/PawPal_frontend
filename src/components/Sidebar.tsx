@@ -44,19 +44,20 @@ function Sidebar({ active, setActive }: SidebarProps) {
         All Groomers
       </div>
       <div
-        className={`flex items-center w-full rounded-md h-9 justify-left pl-4 gap-2  cursor-pointer ${active === "discover" ? "bg-[#dbeafe] text-[#155dfc] " : "text-gray-600 "}`}
-        onClick={() => setActive("discover")}
-      >
-        <IoLocationOutline size={14}/>
-        <h3 >Discover</h3>
-      </div>
-      <div
         className={`flex items-center w-full rounded-md h-9 justify-left pl-4  gap-2 cursor-pointer ${active === "bookings" ? "bg-[#dbeafe] text-[#155dfc] " : "text-gray-600"}`}
         onClick={() => setActive("bookings")}
       >
         <LuCalendar size={14}/>
         Bookings
       </div>
+      <div
+        className={`flex items-center w-full rounded-md h-9 justify-left pl-4 gap-2  cursor-pointer ${active === "discover" ? "bg-[#dbeafe] text-[#155dfc] " : "text-gray-600 "}`}
+        onClick={() => setActive("discover")}
+      >
+        <IoLocationOutline size={16}/>
+        <h3 >Discover</h3>
+      </div>
+      
       </div>
 
       <div className="p-2 border-t border-gray-100 flex flex-col gap-1">
