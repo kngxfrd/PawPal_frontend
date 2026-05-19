@@ -11,7 +11,7 @@ interface Slot {
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  groomerName: string;
+  groomerName: string | undefined ;
   pets: string[];
   availableSlots: Slot[];
   onConfirm: (booking: { pet: string; slot: Slot; notes: string }) => void;
@@ -24,14 +24,33 @@ function AppointModal({
   pets,
   onConfirm,
 }: BookingModalProps) {
-     const [selectedPet, setSelectedPet] = useState("");
+  const [selectedPet, setSelectedPet] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
 
+
   const handleConfirm = () => {
-    if (!selectedPet) { setError("Please select a pet"); return; }
-    if (!selectedSlot) { setError("Please select a slot"); return; }
+    if (!selectedPet) {
+      setError("Please select a pet");
+      return;
+    }
+    if (!selectedSlot) {
+      setError("Please select a slot");
+      return;
+    }
+    const newBooking = {
+      id: crypto.randomUUID().slice(0, 4).toUpperCase(),
+      groomer: groomerName,
+      pet: selectedPet,
+      date: selectedSlot.date,
+      time: selectedSlot.time,
+      status: "pending",
+    };
+
+    const existing = JSON.parse(localStorage.getItem("bookings") || "[]");
+    localStorage.setItem("bookings", JSON.stringify([...existing, newBooking]));
+
     onConfirm({ pet: selectedPet, slot: selectedSlot, notes });
     setSelectedPet("");
     setSelectedSlot(null);
@@ -44,11 +63,12 @@ function AppointModal({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-white rounded-2xl shadow-xl w-[480px] p-6 flex flex-col gap-5">
-
         <div className="flex justify-between items-start">
           <div>
             <h2 className="text-[18px] font-bold">Book Appointment</h2>
-            <p className="text-xs text-gray-400 mt-0.5">Fill in the details to confirm your booking</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Fill in the details to confirm your booking
+            </p>
           </div>
           <IoClose
             onClick={onClose}
@@ -56,7 +76,6 @@ function AppointModal({
             className="cursor-pointer text-gray-400 hover:text-gray-600"
           />
         </div>
-
 
         <div className="bg-blue-50 rounded-xl px-4 py-3 flex items-center gap-3">
           <div className="bg-[#155dfc] text-white w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
@@ -68,21 +87,29 @@ function AppointModal({
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-600">Select Pet</label>
+          <label className="text-sm font-medium text-gray-600">
+            Select Pet
+          </label>
           <select
             value={selectedPet}
             onChange={(e) => setSelectedPet(e.target.value)}
             className="h-11 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
           >
-            <option value="" disabled>Choose a pet...</option>
+            <option value="" disabled>
+              Choose a pet...
+            </option>
             {pets.map((pet) => (
-              <option key={pet} value={pet}>{pet}</option>
+              <option key={pet} value={pet}>
+                {pet}
+              </option>
             ))}
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-600">Select Slot</label>
+          <label className="text-sm font-medium text-gray-600">
+            Select Slot
+          </label>
           {availableSlots.length === 0 ? (
             <p className="text-sm text-red-400">No available slots</p>
           ) : (
@@ -93,9 +120,11 @@ function AppointModal({
                   type="button"
                   onClick={() => setSelectedSlot(slot)}
                   className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm transition-colors
-                    ${selectedSlot?.date === slot.date && selectedSlot?.time === slot.time
-                      ? "border-[#155dfc] bg-blue-50 text-[#155dfc] font-medium"
-                      : "border-gray-200 text-gray-600 hover:border-[#155dfc]"
+                    ${
+                      selectedSlot?.date === slot.date &&
+                      selectedSlot?.time === slot.time
+                        ? "border-[#155dfc] bg-blue-50 text-[#155dfc] font-medium"
+                        : "border-gray-200 text-gray-600 hover:border-[#155dfc]"
                     }`}
                 >
                   <FiCalendar size={13} className="shrink-0" />
@@ -110,7 +139,8 @@ function AppointModal({
 
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-600">
-            Additional Notes <span className="text-gray-400 font-normal">(optional)</span>
+            Additional Notes{" "}
+            <span className="text-gray-400 font-normal">(optional)</span>
           </label>
           <textarea
             value={notes}
@@ -137,10 +167,9 @@ function AppointModal({
             Confirm Booking
           </button>
         </div>
-
       </div>
     </div>
-  )
+  );
 }
 
-export default AppointModal
+export default AppointModal;

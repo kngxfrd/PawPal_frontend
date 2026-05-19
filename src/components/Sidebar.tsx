@@ -2,7 +2,8 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { IoLocationOutline, IoExitOutline } from "react-icons/io5";
 import { FaListUl } from "react-icons/fa6";
 import { LuPawPrint } from "react-icons/lu";
-import { FaPlus } from "react-icons/fa6";
+import { PiPawPrint } from "react-icons/pi";
+import { LuCalendar } from "react-icons/lu";
 
 interface SidebarProps {
   active: string;
@@ -32,7 +33,7 @@ function Sidebar({ active, setActive }: SidebarProps) {
         className={`flex items-center w-full rounded-md h-9 justify-left pl-4  gap-2 cursor-pointer ${active === "mypets" ? "bg-[#dbeafe] text-[#155dfc] " : "text-gray-600"}`}
         onClick={() => setActive("mypets")}
       >
-        <FaPlus size={14} />
+        <PiPawPrint size={14}/>
         My Pets
       </div>
       <div
@@ -48,6 +49,13 @@ function Sidebar({ active, setActive }: SidebarProps) {
       >
         <IoLocationOutline size={14}/>
         <h3 >Discover</h3>
+      </div>
+      <div
+        className={`flex items-center w-full rounded-md h-9 justify-left pl-4  gap-2 cursor-pointer ${active === "bookings" ? "bg-[#dbeafe] text-[#155dfc] " : "text-gray-600"}`}
+        onClick={() => setActive("bookings")}
+      >
+        <LuCalendar size={14}/>
+        Bookings
       </div>
       </div>
 

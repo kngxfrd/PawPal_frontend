@@ -6,6 +6,7 @@ import Dashboard from "./Dashboard";
 import Sidebar from "../components/Sidebar";
 import MyPets from "./MyPets";
 import { useAuth } from "../context/AuthContext";
+import Bookings from "./Bookings";
 
 function Userpage() {
   const { user } = useAuth();
@@ -29,6 +30,7 @@ function Userpage() {
             />
           )}
           {active === "mypets" && <MyPets />}
+          {active === "bookings" && <Bookings/>}
         </main>
       </div>
     </div>

@@ -1,10 +1,12 @@
 import { Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import { useState, useEffect } from "react";
+import AppointModal from "../components/AppointModal";
 
 interface Location {
   lat: number;
   lng: number;
 }
+
 
 interface Groomer {
   id: number;
@@ -53,6 +55,7 @@ function Discover() {
   });
   const [selected, setSelected] = useState<Groomer | null>(null);
   const [search] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -67,23 +70,27 @@ function Discover() {
       );
     }
   }, []);
-
-  const filtered = dummyGroomers.filter((g) =>
-    g.name.toLowerCase().includes(search.toLowerCase()) ||
-    g.address.toLowerCase().includes(search.toLowerCase())
+  const pets = JSON.parse(localStorage.getItem("pets") || "[]");
+  const petNames = pets.map((p: any) => p.Name);
+  const filtered = dummyGroomers.filter(
+    (g) =>
+      g.name.toLowerCase().includes(search.toLowerCase()) ||
+      g.address.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <div className="px-10 py-6">
-
       <div className="mb-6">
         <h1 className="text-[24px] font-bold">Discover Groomers</h1>
         <p className="text-[12px] text-gray-400">Find a groomer near you</p>
       </div>
-    <div className=" gap-6">
-
+      <div className=" gap-6">
         <div className="flex-1 h-[520px] rounded-2xl overflow-hidden shadow-sm border border-gray-100 z-0 relative">
-          <Map defaultCenter={currentLocation} defaultZoom={13} mapId="pawpal-map">
+          <Map
+            defaultCenter={currentLocation}
+            defaultZoom={13}
+            mapId="pawpal-map"
+          >
             <Marker
               position={currentLocation}
               icon={{
@@ -112,20 +119,33 @@ function Discover() {
                 <div className="p-1 flex flex-col gap-1">
                   <p className="font-bold text-sm">{selected.name}</p>
                   <p className="text-xs text-gray-500">{selected.address}</p>
-                  <button className="mt-1 text-xs text-white bg-[#155dfc] px-3 py-1 rounded-md">
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="mt-1 text-xs text-white bg-[#155dfc] px-3 py-1 rounded-md"
+                  >
                     Book Appointment
                   </button>
                 </div>
               </InfoWindow>
             )}
+
+            <AppointModal
+              isOpen={showModal}
+              onClose={() => setShowModal(false)}
+              groomerName={selected?.name}
+              pets={petNames}
+              availableSlots={[
+                { date: "2025-05-20", time: "09:00 AM" },
+                { date: "2025-05-20", time: "11:00 AM" },
+              ]}
+              onConfirm={(booking) => {
+                console.log("Booking confirmed:", booking);
+              }}
+            />
           </Map>
         </div>
-
-        
-        
-        </div>
       </div>
-   
+    </div>
   );
 }
 

@@ -1,20 +1,39 @@
+import { useEffect, useState } from "react";
 import { FiUsers } from "react-icons/fi";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { LuDollarSign } from "react-icons/lu";
 import BookingsChart from "../components/Bookingcharts";
+import { BsThreeDotsVertical } from "react-icons/bs";
+
 
 interface GroomHeaderProps {
   totalbookings: number;
   totalamount: string;
   totalcustomers: number;
 }
+
+interface Booking {
+  id: string;
+  groomer: string;
+  pet: string;
+  date: string;
+  time: string;
+  status: string;
+}
+
 function Dashboard({
   totalbookings,
   totalamount,
   totalcustomers,
 }: GroomHeaderProps) {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  useEffect(() => {
+    const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+
+    setBookings(storedBookings);
+  }, []);
   return (
-    <div className=" h-screen flex flex-col px-15 mb-50">
+    <div className=" h-screen flex flex-col px-15 ">
       <div className="flex flex-col items-left justify-center mt-6 ">
         <h1 className=" text-left text-[24px] font-bold">My Dashboard</h1>
         <h1 className="text-[12px] text-gray-500">
@@ -29,7 +48,9 @@ function Dashboard({
             </div>
             <div className="flex flex-col justify-center">
               <h1 className="text-sm text-gray-500">Total Bookings</h1>
-              <h1 className=" text-[22px] font-medium text-gray-800">{totalbookings} </h1>
+              <h1 className=" text-[22px] font-medium text-gray-800">
+                {totalbookings}{" "}
+              </h1>
             </div>
           </div>
         </div>
@@ -40,7 +61,9 @@ function Dashboard({
             </div>
             <div className="flex flex-col justify-center">
               <h1 className="text-sm text-gray-500">Total Amount</h1>
-              <h1 className="text-[22px] font-medium text-gray-800">{totalamount} </h1>
+              <h1 className="text-[22px] font-medium text-gray-800">
+                {totalamount}{" "}
+              </h1>
             </div>
           </div>
         </div>
@@ -64,7 +87,60 @@ function Dashboard({
         </div>
         <div className="rounded-xl shadow-sm p-6 w-110 mt-10">
           <h1 className="font-bold text-[16px] mb-4">Upcoming Bookings</h1>
-          
+
+          {bookings.length === 0 ? (
+            <p className="text-sm text-gray-400">No bookings yet</p>
+          ) : (
+            <div className="">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 bg-gray-50">
+                    <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
+                      GROOMER
+                    </th>
+                    <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
+                      PET
+                    </th>
+                    <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
+                      DATE
+                    </th>
+                    <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
+                      MORE
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bookings.map((booking) => (
+                    <tr
+                      key={booking.id}
+                      className="border-b border-gray-200 hover:bg-blue-50/30 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <span className="font-semibold text-sm text-gray-800">
+                          {booking.groomer}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="flex items-center gap-1 text-sm text-gray-600">
+                          {booking.pet}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-600">
+                          {booking.date}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-600">
+                          <BsThreeDotsVertical />
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>
