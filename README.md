@@ -12,6 +12,7 @@ The backend uses `drf-spectacular` to automatically generate OpenAPI documentati
 Once the backend is running, you can access the full interactive API documentation at:
 - **Swagger UI:** `http://localhost:8000/api/docs/`
 - **Schema:** `http://localhost:8000/api/schema/`
+- API URL = 'https://pawpal-api-4szt.onrender.com/'
 
 *Use the Swagger UI to test endpoints and see the exact request/response JSON payloads.*
 
