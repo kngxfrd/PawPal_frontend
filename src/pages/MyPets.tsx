@@ -50,7 +50,6 @@ function MyPets() {
 
   return (
     <div className="flex flex-col px-10 py-6">
-      {/* Header */}
       <div className="flex items-center justify-between mb-1">
         <div>
           <h1 className="text-[24px] font-bold">My Pets</h1>
