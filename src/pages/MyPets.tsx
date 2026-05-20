@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { IoClose } from "react-icons/io5";
+import { IoCardOutline, IoClose } from "react-icons/io5";
 import { TfiTrash } from "react-icons/tfi";
 import { GoPencil } from "react-icons/go";
+import DataTable from "../components/DataTable";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 interface Pet {
   Id: string;
@@ -14,6 +16,7 @@ interface Pet {
 
 function MyPets() {
   const [open, setOpen] = useState(false);
+  const [tip, setTip] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
   const [name, setName] = useState("");
   const [type, setType] = useState("");
@@ -42,12 +45,95 @@ function MyPets() {
     setAge("");
     setInfo("");
     setOpen(false);
+    setTip(false);
   };
 
   const handleDelete = (id: string) => {
     setPets(pets.filter((p) => p.Id !== id));
   };
+const columns = [
+  {
+    header: "ID",
+    accessor: "Id",
+    render: (value: string) => (
+      <span className="text-xs font-mono bg-gray-100 text-gray-500 px-2 py-1 rounded-md">
+        #{value}
+      </span>
+    ),
+  },
 
+  {
+    header: "Name",
+    accessor: "Name",
+    render: (value: string) => (
+      <span className="font-semibold text-sm text-gray-800">
+        {value}
+      </span>
+    ),
+  },
+
+  {
+    header: "Type",
+    accessor: "Type",
+    render: (value: string) => (
+      <span className="text-sm text-gray-600">
+        {value}
+      </span>
+    ),
+  },
+
+  {
+    header: "Breed",
+    accessor: "Breed",
+  },
+
+  {
+    header: "Age",
+    accessor: "Age",
+  },
+
+  {
+    header: "Actions",
+    accessor: "Actions",
+
+    render: (_: any, pet: Pet) => (
+      <div className="flex items-center pl-4 gap-3">
+        <button
+          onClick={() => setTip(!tip)}
+          className="text-gray-400 hover:text-[#155dfc] transition-colors"
+        >
+          <BsThreeDotsVertical />
+        </button>
+
+        {tip && (
+          <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-xl z-50 w-36 overflow-hidden mt-60 mr-15">
+            <button className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-red-50 hover:text-red-500 transition-colors">
+              <IoCardOutline size={14} />
+              Pay
+            </button>
+
+            <button
+              className="cursor-pointer flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-red-50 hover:text-red-500 transition-colors"
+            >
+              <GoPencil size={14} />
+              Edit
+            </button>
+            <button
+              onClick={() => {
+                handleDelete(pet.Id)
+                setTip(false);
+              }}
+              className="cursor-pointer flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-red-50 hover:text-red-500 transition-colors"
+            >
+              <TfiTrash size={14} />
+              Delete
+            </button>
+          </div>
+        )}
+      </div>
+    ),
+  },
+];
   return (
     <div className="flex flex-col px-10 py-6">
       <div className="flex items-center justify-between mb-1">
@@ -70,77 +156,7 @@ function MyPets() {
           <p className="mt-3 text-sm">No pets added yet</p>
         </div>
       ) : (
-        <div className="mt-6 bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
-                  ID
-                </th>
-                <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
-                  NAME
-                </th>
-                <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
-                  TYPE
-                </th>
-                <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
-                  BREED
-                </th>
-                <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
-                  AGE
-                </th>
-                <th className="text-left text-xs text-gray-400 font-medium px-6 py-4 tracking-widest">
-                  ACTIONS
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {pets.map((pet) => (
-                <tr
-                  key={pet.Id}
-                  className="border-b border-gray-100 hover:bg-blue-50/30 transition-colors"
-                >
-                  <td className="px-6 py-4">
-                    <span className="text-xs font-mono bg-gray-100 text-gray-500 px-2 py-1 rounded-md">
-                      #{pet.Id}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="font-semibold text-sm text-gray-800">
-                      {pet.Name}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="flex items-center gap-1 text-sm text-gray-600">
-                      {pet.Type}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-600">{pet.Breed}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-600">
-                      {pet.Age} years
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <button className="text-gray-400 hover:text-[#155dfc] transition-colors">
-                        <GoPencil size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(pet.Id)}
-                        className="text-gray-400 hover:text-red-500 transition-colors"
-                      >
-                        <TfiTrash size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable columns={columns} data={pets} />
       )}
 
       {open && (

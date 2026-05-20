@@ -5,11 +5,9 @@ import Groomers from "./Groomers";
 import Dashboard from "./Dashboard";
 import Sidebar from "../components/Sidebar";
 import MyPets from "./MyPets";
-import { useAuth } from "../context/AuthContext";
 import Bookings from "./Bookings";
 
 function Userpage() {
-  const { user } = useAuth();
   const [active, setActive] = useState("dashboard");
 
   return (
@@ -26,7 +24,7 @@ function Userpage() {
             <Dashboard
               totalbookings={6}
               totalcustomers={7}
-              totalamount={"$300"}
+              totalamount={300}
             />
           )}
           {active === "mypets" && <MyPets />}

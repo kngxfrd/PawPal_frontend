@@ -8,7 +8,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 interface GroomHeaderProps {
   totalbookings: number;
-  totalamount: string;
+  totalamount: number;
   totalcustomers: number;
 }
 
@@ -62,7 +62,7 @@ function Dashboard({
             <div className="flex flex-col justify-center">
               <h1 className="text-sm text-gray-500">Total Amount</h1>
               <h1 className="text-[22px] font-medium text-gray-800">
-                {totalamount}{" "}
+                ₵{totalamount}
               </h1>
             </div>
           </div>
@@ -148,42 +148,3 @@ function Dashboard({
 }
 
 export default Dashboard;
-
-// interface Booking {
-//   id: number;
-//   groomer: string;
-//   address: string;
-//   pet: string;
-//   date: string;
-//   time: string;
-//   status: "confirmed" | "pending" | "completed";
-// }
-// const dummyBookings: Booking[] = [
-//   {
-//     id: 1,
-//     groomer: "Timothy Groomshop",
-//     address: "123 Carlton Street",
-//     pet: "Rex",
-//     date: "2025-05-20",
-//     time: "10:00 AM",
-//     status: "confirmed",
-//   },
-//   {
-//     id: 2,
-//     groomer: "Happy Paws Salon",
-//     address: "45 Osu High Street",
-//     pet: "Boadi",
-//     date: "2025-05-22",
-//     time: "2:00 PM",
-//     status: "pending",
-//   },
-//   {
-//     id: 3,
-//     groomer: "Fluffy Friends Spa",
-//     address: "78 Labone Crescent",
-//     pet: "Max",
-//     date: "2025-05-10",
-//     time: "11:00 AM",
-//     status: "completed",
-//   },
-// ];

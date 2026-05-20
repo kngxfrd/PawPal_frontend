@@ -1,18 +1,20 @@
 import { createContext, useContext, useState } from "react";
+import { loginUser as apiLogin, register as apiRegister } from "../services/authService";
+import type { RegisterPayload } from "../services/auth";
 
 interface User {
-  id: string;
-  fullName: string;
+  id: number;
   email: string;
-  password: string;
-  role: "pet_owner" | "groomer";
+  phone_number: string;
+  role: "owner" | "groomer";
+  first_name: string;
+  last_name: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string, role: "pet_owner" | "groomer") => string | null;
-  signup: (fullName: string, email: string, password: string, role: "pet_owner" | "groomer") => string | null;
-  signOut: () => void;
+  login: (email: string, password: string) => Promise<string | null>;
+  signup: (payload: RegisterPayload) => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -23,32 +25,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const login = (email: string, password: string, role: "pet_owner" | "groomer") => {
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    const found = users.find((u) => u.email === email && u.password === password && u.role===role);
-    if (!found) return "Invalid email or password";
-    localStorage.setItem("currentUser", JSON.stringify(found));
-    setUser(found);
-    return null;
+  const login = async (email: string, password: string): Promise<string | null> => {
+    try {
+      const res = await apiLogin({ email, password });
+      setUser(res.user);
+      localStorage.setItem("currentUser", JSON.stringify(res.user));
+      return null;
+    } catch (err: any) {
+      return err.response?.data?.message || "Login failed";
+    }
   };
 
-  const signup = (fullName: string, email: string, password: string, role: "pet_owner" | "groomer") => {
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    if (users.find((u) => u.email === email)) return "Email already exists";
-    const newUser: User = { id: crypto.randomUUID(), fullName, email, password, role };
-    localStorage.setItem("users", JSON.stringify([...users, newUser]));
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-    setUser(newUser);
-    return null;
+  const signup = async (payload: RegisterPayload): Promise<string | null> => {
+    try {
+      const res = await apiRegister(payload);
+      setUser(res.user);
+      localStorage.setItem("currentUser", JSON.stringify(res.user));
+      return null;
+    } catch (err: any) {
+      return err.response?.data?.message || "Registration failed";
+    }
   };
 
-  const signOut = () => {
-    localStorage.removeItem("currentUser");
-    setUser(null);
-  };
+  
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, signOut }}>
+    <AuthContext.Provider value={{ user, login, signup }}>
       {children}
     </AuthContext.Provider>
   );
