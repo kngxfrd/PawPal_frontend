@@ -72,8 +72,7 @@ function Landing() {
       
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-100/80 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          
-          {/* Logo & Brand */}
+
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate("/")}>
             <div className="bg-blue-50 p-2 rounded-xl border border-blue-100 flex items-center justify-center transition-all duration-300 hover:scale-105">
               <LuPawPrint size={26} color="#155dfc" />
@@ -83,7 +82,6 @@ function Landing() {
             </span>
           </div>
 
-          {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center gap-8">
             <a href="#services" className="text-sm font-semibold text-gray-600 hover:text-[#155dfc] transition-colors">Services</a>
             <a href="#gallery" className="text-sm font-semibold text-gray-600 hover:text-[#155dfc] transition-colors">Gallery</a>
@@ -91,7 +89,6 @@ function Landing() {
             <a href="#testimonials" className="text-sm font-semibold text-gray-600 hover:text-[#155dfc] transition-colors">Testimonials</a>
           </div>
 
-          {/* Action Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <button
               onClick={() => navigate("/login")}
@@ -107,7 +104,6 @@ function Landing() {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
@@ -124,7 +120,6 @@ function Landing() {
           </button>
         </div>
 
-        {/* Mobile Navigation Dropdown */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-lg px-6 py-5 flex flex-col gap-4 shadow-xl">
             <a 
@@ -180,11 +175,9 @@ function Landing() {
         )}
       </nav>
 
-      {/* --- HERO SECTION --- */}
       <section className="relative overflow-hidden pt-12 pb-24 md:py-32">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          
-          {/* Left Column: Heading and CTAs */}
+
           <div className="lg:col-span-6 flex flex-col text-left">
             
             
@@ -212,7 +205,6 @@ function Landing() {
               </a>
             </div>
 
-            {/* Subtle Brand Trust */}
             <div className="mt-12 pt-8 border-t border-gray-100 flex items-center gap-6">
               <div className="flex -space-x-3">
                 <img src={dogPic1} alt="Pet" className="w-10 h-10 rounded-full border-2 border-white object-cover" />
@@ -231,13 +223,11 @@ function Landing() {
             </div>
           </div>
 
-          {/* Right Column: Dynamic Asset Overlap Showcase */}
           <div className="lg:col-span-6 relative h-[450px] sm:h-[550px] w-full flex items-center justify-center">
-            
-            {/* Soft decorative background glow */}
+
             <div className="absolute -inset-10 bg-gradient-to-tr from-blue-300/10 to-[#155dfc]/5 rounded-full blur-3xl opacity-70"></div>
 
-            {/* Primary Main Hero Image Card */}
+
             <div className="absolute w-[80%] h-[80%] rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white rotate-2 hover:rotate-0 transition-transform duration-500 z-10">
               <img 
                 src={dogPic5} 
@@ -251,7 +241,6 @@ function Landing() {
               </div>
             </div>
 
-            {/* Overlapping Absolute Card 1 (Dog Pic) */}
             <div className="absolute top-[8%] left-[-5%] w-[180px] rounded-3xl bg-white p-3.5 shadow-xl border border-gray-100 -rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-500 z-20 hidden sm:block text-left">
               <div className="h-32 rounded-2xl overflow-hidden mb-2.5">
                 <img src={dogPic1} alt="Golden Retriever" className="w-full h-full object-cover" />
@@ -263,7 +252,6 @@ function Landing() {
               </div>
             </div>
 
-            {/* Overlapping Absolute Card 2 (Cat Pic) */}
             <div className="absolute bottom-[8%] right-[-5%] w-[185px] rounded-3xl bg-white p-3.5 shadow-xl border border-gray-100 rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-500 z-20 hidden sm:block text-left">
               <div className="h-32 rounded-2xl overflow-hidden mb-2.5">
                 <img src={catPic3} alt="Siberian Cat" className="w-full h-full object-cover" />
@@ -278,8 +266,6 @@ function Landing() {
 
         </div>
       </section>
-
-      {/* --- STATS BAR --- */}
       <section className="bg-[#155dfc]/5 border-y border-blue-100/50 py-10">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
@@ -301,7 +287,6 @@ function Landing() {
         </div>
       </section>
 
-      {/* --- SERVICES / FEATURES SECTION --- */}
       <section id="services" className="py-24 max-w-7xl mx-auto px-6 text-center">
         <div className="max-w-2xl mx-auto mb-16">
           <span className="text-xs font-bold uppercase tracking-widest text-[#155dfc]">OUR SERVICES</span>
@@ -325,7 +310,6 @@ function Landing() {
         </div>
       </section>
 
-      {/* --- MEET OUR FRIENDS / GALLERY --- */}
       <section id="gallery" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-2xl mx-auto text-center mb-16">
@@ -377,24 +361,22 @@ function Landing() {
         </div>
       </section>
 
-      {/* --- ABOUT US / WHY CHOOSE US --- */}
+
       <section id="about" className="py-24 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          
-          {/* Image Side */}
+
           <div className="lg:col-span-6 relative">
             <div className="absolute -inset-4 bg-blue-100 rounded-[2.5rem] -rotate-3 z-0"></div>
             <div className="h-[480px] rounded-[2rem] overflow-hidden shadow-2xl relative z-10 border-4 border-white">
               <img src={homeImg} alt="Pet Clinic and Grooming Team" className="w-full h-full object-cover" />
             </div>
-            {/* Absolute badge */}
+
             <div className="absolute bottom-6 right-6 bg-white p-4.5 rounded-2xl shadow-xl z-20 border border-gray-100 max-w-[200px] text-left">
               <h5 className="font-extrabold text-[#155dfc] text-sm">Professional Standards</h5>
               <p className="text-[11px] text-gray-500 mt-1 leading-normal">Certified pet handling protocols to keep every friend happy and safe.</p>
             </div>
           </div>
 
-          {/* Text Side */}
           <div className="lg:col-span-6 text-left">
             <span className="text-xs font-bold uppercase tracking-widest text-[#155dfc]">ABOUT PAWPAL</span>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mt-3 tracking-tight">The ultimate dashboard built for caring pet owners.</h2>
@@ -424,7 +406,7 @@ function Landing() {
         </div>
       </section>
 
-      {/* --- TESTIMONIALS SECTION --- */}
+
       <section id="testimonials" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="max-w-2xl mx-auto mb-16">
@@ -459,9 +441,7 @@ function Landing() {
         </div>
       </section>
 
-      {/* --- BOTTOM HERO CALL-TO-ACTION --- */}
       <section className="py-24 relative overflow-hidden bg-[#155dfc] text-white">
-        {/* Soft layout pattern */}
         <div className="absolute top-0 right-0 w-[40%] h-full bg-blue-600/30 skew-x-12 origin-top-right"></div>
         
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
@@ -486,11 +466,10 @@ function Landing() {
         </div>
       </section>
 
-      {/* --- SLICK DARK FOOTER --- */}
+
       <footer className="bg-gray-900 text-gray-400 py-16 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12">
-          
-          {/* Logo Brand Info */}
+
           <div className="md:col-span-5 flex flex-col items-start text-left">
             <div className="flex items-center gap-2.5 mb-5">
               <div className="bg-blue-600/10 p-2 rounded-xl border border-blue-500/20 flex items-center justify-center">
@@ -505,7 +484,6 @@ function Landing() {
             </p>
           </div>
 
-          {/* Links 1 */}
           <div className="md:col-span-3 flex flex-col items-start text-left">
             <h5 className="font-bold text-white text-sm uppercase tracking-wider mb-4">Quick Navigation</h5>
             <ul className="space-y-2.5 text-sm">
@@ -516,7 +494,6 @@ function Landing() {
             </ul>
           </div>
 
-          {/* Links 2 / Contact */}
           <div className="md:col-span-4 flex flex-col items-start text-left">
             <h5 className="font-bold text-white text-sm uppercase tracking-wider mb-4">Get In Touch</h5>
             <div className="space-y-3.5 text-sm">
@@ -537,7 +514,6 @@ function Landing() {
 
         </div>
 
-        {/* Copy bar */}
         <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-gray-800 text-center md:flex md:justify-between md:text-left text-xs text-gray-600">
           <p>© {new Date().getFullYear()} PawPal GH. All rights reserved.</p>
           <div className="flex justify-center gap-6 mt-4 md:mt-0">

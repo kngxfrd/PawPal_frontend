@@ -18,7 +18,6 @@ function Navbar({ setSidebarOpen }: NavbarProps) {
 
   return (
     <div className="bg-white flex flex-row justify-between md:justify-end px-6 md:px-8 items-center w-full h-16 border-b border-gray-100 shadow-xs">
-      {/* Mobile Hamburger menu toggle button */}
       <button
         type="button"
         onClick={() => setSidebarOpen(true)}
@@ -27,7 +26,6 @@ function Navbar({ setSidebarOpen }: NavbarProps) {
         <FiMenu size={20} />
       </button>
 
-      {/* User profile avatar section */}
       <div className="flex items-center gap-3">
         {user && (
           <div className="hidden sm:flex flex-col text-right">

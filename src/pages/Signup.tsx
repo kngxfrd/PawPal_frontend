@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { LuPawPrint } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineMail } from "react-icons/hi";
@@ -9,6 +10,7 @@ import { useAuth } from "../context/AuthContext";
 
 function Signup() {
   const { signup } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [role, setRole] = useState<"owner" | "groomer">("owner");
 
@@ -19,7 +21,7 @@ function Signup() {
     role: "owner",
     email: "",
     password: "",
-    password_confirm:"",
+    password_confirm: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -42,7 +44,7 @@ function Signup() {
         setError(errMsg);
       } else {
         setSuccessMessage(
-          `Account created! Welcome, ${form.first_name || "there"}`
+          `Account created! Welcome, ${form.first_name || "there"}`,
         );
         setTimeout(() => navigate("/home"), 1500);
       }
@@ -169,52 +171,48 @@ function Signup() {
               </div>
             </div>
 
-            {/* <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-600">
-                Password
-              </label>
-              <div className="flex items-center gap-3 h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
-                <RiLockPasswordLine
-                  size={16}
-                  className="text-gray-400 shrink-0"
-                />
-                <input
-                  id="password"
-                  name="password"
-                  required
-                  value={form.password}
-                  onChange={handleChange}
-                  type="password"
-                  placeholder="••••••••••"
-                  className="flex-1 bg-transparent text-sm outline-none"
-                />
-              </div>
-            </div> */}
             <div className="flex gap-3">
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-sm font-medium text-gray-600">
-                  Password 
+                  Password
                 </label>
                 <div className="flex items-center gap-3 h-11 rounded-xl border w-40 border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
-                  <RiLockPasswordLine size={15} className="text-gray-400 shrink-0" />
+                  <RiLockPasswordLine
+                    size={15}
+                    className="text-gray-400 shrink-0"
+                  />
                   <input
                     id="password"
-                  name="password"
-                  required
-                  type="password"
-                  value={form.password}
+                    name="password"
+                    required
+                    type={showPassword ? "text" : "password"}
+                    value={form.password}
                     onChange={handleChange}
                     placeholder="••••••••••"
                     className="flex-1 bg-transparent text-sm outline-none "
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-3 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? (
+                      <IoEyeOffOutline size={18} />
+                    ) : (
+                      <IoEyeOutline size={18} />
+                    )}
+                  </button>
                 </div>
               </div>
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-sm font-medium text-gray-600">
-                  Confirm Password 
+                  Confirm Password
                 </label>
                 <div className="flex items-center gap-3 h-11 rounded-xl border w-40 border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
-                  <RiLockPasswordLine size={15} className="text-gray-400 shrink-0" />
+                  <RiLockPasswordLine
+                    size={15}
+                    className="text-gray-400 shrink-0"
+                  />
                   <input
                     id="password_confirm"
                     name="password_confirm"

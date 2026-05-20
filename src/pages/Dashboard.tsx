@@ -72,10 +72,8 @@ function Dashboard() {
   return (
     <div className="min-h-screen w-full bg-[#f8fafc]">
       <div className="flex flex-col px-4 md:px-8 py-8 gap-8 max-w-7xl mx-auto w-full font-sans">
-        
-        {/* Minimalist, Ultra-Premium Welcome Card */}
+
         <div className="bg-[#155dfc] text-white rounded-2xl p-6 md:p-8 border border-blue-600/10 shadow-sm relative overflow-hidden">
-          {/* Subtle Abstract Wave Vector for high-end SaaS touch */}
           <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-15 pointer-events-none hidden md:block">
             <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
               <path d="M0,100 C30,40 70,60 100,0 L100,100 Z" fill="currentColor"/>
@@ -98,10 +96,8 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Clean, Calmer Metric Row (White surfaces, colored icon badges) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          {/* Total Bookings Card */}
+
           <div className="group bg-white border border-slate-100 rounded-2xl p-5 shadow-2xs hover:shadow-xs hover:border-slate-200/80 transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-0.5">
@@ -114,7 +110,6 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Total Amount Card */}
           <div className="group bg-white border border-slate-100 rounded-2xl p-5 shadow-2xs hover:shadow-xs hover:border-slate-200/80 transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-0.5">
@@ -127,7 +122,6 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Total Customers Card */}
           <div className="group bg-white border border-slate-100 rounded-2xl p-5 shadow-2xs hover:shadow-xs hover:border-slate-200/80 transition-all duration-200 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-0.5">
@@ -142,14 +136,11 @@ function Dashboard() {
 
         </div>
 
-        {/* Main Grid Area - Beautifully Balanced */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          {/* Bookings Analytics Chart (Grid col-span-2) */}
           <div className="lg:col-span-2 bg-white border border-slate-100 shadow-2xs rounded-2xl">
             <BookingsChart />
           </div>
 
-          {/* Upcoming Bookings Feed (Grid col-span-1) */}
           <div className="bg-white border border-slate-100 shadow-2xs rounded-2xl p-6 flex flex-col gap-5">
             <div>
               <h2 className="font-bold text-[15px] text-slate-800">Upcoming Bookings</h2>
@@ -178,7 +169,6 @@ function Dashboard() {
                       className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0 hover:bg-slate-50/30 transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        {/* Round dynamic pet initials avatar */}
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold border text-sm shadow-3xs ${petColorClass}`}>
                           {(booking.pet || "P").charAt(0).toUpperCase()}
                         </div>

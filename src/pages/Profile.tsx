@@ -46,14 +46,12 @@ function Profile() {
           <span>Back</span>
         </button>
 
-        {/* Main Profile Container */}
         <div className="flex flex-col gap-6 max-w-5xl mx-auto w-full">
-          
-          {/* Header Card with Banner */}
+
           <div className="bg-white rounded-2xl shadow-2xs border border-slate-100 overflow-hidden relative transition-all duration-200">
-            {/* Cover Banner */}
+
             <div className="h-40 w-full bg-[#155dfc] border-b border-blue-600/10 relative overflow-hidden">
-              {/* Subtle Abstract Wave Vector for high-end SaaS touch */}
+
               <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-15 pointer-events-none">
                 <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                   <path d="M0,100 C30,40 70,60 100,0 L100,100 Z" fill="currentColor" className="text-white" />
@@ -64,7 +62,7 @@ function Profile() {
             <div className="px-6 sm:px-10 pb-8 pt-0 relative">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 -mt-12 sm:-mt-16">
                 
-                {/* Avatar + name */}
+
                 <div className="flex flex-col sm:flex-row items-center sm:items-end gap-5">
                   <div className="relative group">
                     <div className="text-slate-500 border-4 border-white w-28 h-28 sm:w-32 sm:h-32 flex justify-center items-center rounded-full bg-slate-50 shrink-0 shadow-sm border border-slate-100 relative z-10 overflow-hidden transition-transform duration-300 hover:scale-105">
@@ -99,7 +97,7 @@ function Profile() {
                   </div>
                 </div>
 
-                {/* Actions */}
+
                 <div className="flex gap-3 mt-4 sm:mt-0 mb-2 justify-center">
                   {editing ? (
                     <button
@@ -125,7 +123,6 @@ function Profile() {
                 </div>
               </div>
 
-              {/* Stats row */}
               <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-slate-100">
                 <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-100 shadow-2xs hover:shadow-xs hover:border-slate-200/80 transition-all duration-200">
                   <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl mb-2">
@@ -155,7 +152,7 @@ function Profile() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Details card */}
+
             <div className="lg:col-span-2 bg-white rounded-2xl shadow-2xs border border-slate-100 p-6 sm:p-8">
               <h2 className="font-bold text-[15px] text-slate-800 mb-6 flex items-center gap-2">
                 Personal Details
@@ -223,7 +220,6 @@ function Profile() {
               </div>
             </div>
 
-            {/* Recent bookings sidebar */}
             <div className="bg-white rounded-2xl shadow-2xs border border-slate-100 p-6 sm:p-8 h-max">
               <h2 className="font-bold text-[15px] text-slate-800 mb-6">Recent Bookings</h2>
               
