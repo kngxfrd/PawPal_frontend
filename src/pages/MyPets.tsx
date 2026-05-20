@@ -63,7 +63,7 @@ const columns = [
   },
 
   {
-    header: "Name",
+    header: "NAME",
     accessor: "Name",
     render: (value: string) => (
       <span className="font-semibold text-sm text-gray-800">
@@ -73,7 +73,7 @@ const columns = [
   },
 
   {
-    header: "Type",
+    header: "TYPE",
     accessor: "Type",
     render: (value: string) => (
       <span className="text-sm text-gray-600">
@@ -83,17 +83,17 @@ const columns = [
   },
 
   {
-    header: "Breed",
+    header: "BREED",
     accessor: "Breed",
   },
 
   {
-    header: "Age",
+    header: "AGE",
     accessor: "Age",
   },
 
   {
-    header: "Actions",
+    header: "ACTIONS",
     accessor: "Actions",
 
     render: (_: any, pet: Pet) => (
@@ -151,13 +151,7 @@ const columns = [
         </button>
       </div>
 
-      {pets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-gray-300">
-          <p className="mt-3 text-sm">No pets added yet</p>
-        </div>
-      ) : (
-        <DataTable columns={columns} data={pets} />
-      )}
+      <DataTable columns={columns} data={pets} emptyMessage="No pets added" />
 
       {open && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
