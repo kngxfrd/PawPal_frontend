@@ -135,127 +135,138 @@ const columns = [
   },
 ];
   return (
-    <div className="flex flex-col px-10 py-6">
-      <div className="flex items-center justify-between mb-1">
-        <div>
-          <h1 className="text-[24px] font-bold">My Pets</h1>
-          <p className="text-[12px] text-gray-400">
-            Manage your registered pets
-          </p>
+    <div className="min-h-full w-full bg-[#f8fafc]">
+      <div className="flex flex-col px-4 md:px-8 py-8 gap-6 max-w-7xl mx-auto w-full font-sans">
+        
+        {/* Page Header */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-1.5">
+            <h1 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">
+              My Pets
+            </h1>
+            <p className="text-xs md:text-sm text-slate-400 font-medium">
+              Manage your registered pets
+            </p>
+          </div>
+          <button
+            onClick={() => setOpen(true)}
+            className="bg-[#155dfc] hover:bg-blue-600 active:scale-98 transition-all duration-200 cursor-pointer flex items-center gap-2 text-white px-4 rounded-xl h-9.5 text-xs font-bold shadow-3xs hover:shadow-2xs"
+          >
+            + Add Pet
+          </button>
         </div>
-        <button
-          onClick={() => setOpen(true)}
-          className="bg-[#155dfc] hover:bg-blue-700 transition-colors cursor-pointer flex items-center gap-2 text-white px-4 rounded-xl h-9 text-sm font-medium"
-        >
-          + Add Pet
-        </button>
-      </div>
 
-      <DataTable columns={columns} data={pets} emptyMessage="No pets added" />
+        {/* Data Table */}
+        <div className="bg-white border border-slate-100 shadow-2xs rounded-2xl p-2 sm:p-4">
+          <DataTable columns={columns} data={pets} emptyMessage="No pets added yet" />
+        </div>
 
-      {open && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-          <div className="bg-white rounded-2xl shadow-xl w-[420px] p-6 flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-[18px] font-bold">Add Pet</h2>
-                <p className="text-xs text-gray-400">
-                  Fill in your pet's details
-                </p>
-              </div>
-              <IoClose
-                onClick={() => setOpen(false)}
-                size={22}
-                className="cursor-pointer text-gray-400 hover:text-gray-600"
-              />
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Pet Name
-                </label>
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="eg. Rex, Boadi"
-                  className="h-11 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-600">
-                    Pet Type
-                  </label>
-                  <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                    className="h-11 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
-                  >
-                    <div className="rounded-lg border-0">
-                        <option value="" disabled className="text-sm text-gray-400">
-                          Select pet type...
-                        </option>
-                        <option value="dog"> Dog </option>
-                        <option value="cat"> Cat </option>
-                        <option value="rabbit"> Rabbit </option>
-                        <option value="bird"> Bird </option>
-                        <option value="other"> Other </option>
-                    </div>
-                  </select>
+        {/* Add Pet Dialog Modal */}
+        {open && (
+          <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs z-50">
+            <div className="bg-white rounded-2xl shadow-xl w-[420px] max-w-[90%] p-6 flex flex-col gap-5 border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+              
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <h2 className="text-base font-bold text-slate-800">Add Pet</h2>
+                  <p className="text-xs text-slate-400 font-medium">
+                    Fill in your pet's details below
+                  </p>
                 </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-600">
-                    Age
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors"
+                >
+                  <IoClose size={20} />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Pet Name
                   </label>
                   <input
-                    type="number"
-                    min={0}
-                    max={30}
-                    placeholder="0"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    className="h-11 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Rex, Buddy"
+                    className="h-10.5 rounded-xl border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 placeholder-slate-300 focus:outline-none focus:border-[#155dfc] focus:ring-1 focus:ring-blue-100 transition-all"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      Pet Type
+                    </label>
+                    <select
+                      value={type}
+                      onChange={(e) => setType(e.target.value)}
+                      className="h-10.5 rounded-xl border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 focus:outline-none focus:border-[#155dfc] focus:ring-1 focus:ring-blue-100 transition-all"
+                    >
+                      <option value="" disabled className="text-slate-300">
+                        Select...
+                      </option>
+                      <option value="dog">Dog</option>
+                      <option value="cat">Cat</option>
+                      <option value="rabbit">Rabbit</option>
+                      <option value="bird">Bird</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      Age
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={30}
+                      placeholder="0"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                      className="h-10.5 rounded-xl border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 placeholder-slate-300 focus:outline-none focus:border-[#155dfc] focus:ring-1 focus:ring-blue-100 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Breed
+                  </label>
+                  <input
+                    value={breed}
+                    onChange={(e) => setBreed(e.target.value)}
+                    placeholder="e.g. Golden Retriever"
+                    className="h-10.5 rounded-xl border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 placeholder-slate-300 focus:outline-none focus:border-[#155dfc] focus:ring-1 focus:ring-blue-100 transition-all"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Additional Notes
+                  </label>
+                  <textarea
+                    value={info}
+                    onChange={(e) => setInfo(e.target.value)}
+                    rows={2}
+                    placeholder="Any health or behavioral notes..."
+                    className="rounded-xl border border-slate-200 bg-white p-3.5 text-xs font-medium text-slate-700 placeholder-slate-300 focus:outline-none focus:border-[#155dfc] focus:ring-1 focus:ring-blue-100 transition-all resize-none"
                   />
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Breed
-                </label>
-                <input
-                  value={breed}
-                  onChange={(e) => setBreed(e.target.value)}
-                  placeholder="Breed"
-                  className="h-11 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Additional Notes
-                </label>
-                <textarea
-                  value={info}
-                  onChange={(e) => setInfo(e.target.value)}
-                  rows={2}
-                  placeholder="Any extra info..."
-                  className="rounded-xl border border-gray-200 pl-4 pt-3 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc] resize-none"
-                />
-              </div>
+              <button
+                onClick={handleApply}
+                className="w-full rounded-xl bg-[#155dfc] hover:bg-blue-600 active:scale-98 text-white text-xs font-bold h-11 shadow-3xs hover:shadow-2xs transition-all duration-200 mt-2"
+              >
+                Add Pet
+              </button>
             </div>
-
-            <button
-              onClick={handleApply}
-              className="w-full rounded-xl bg-[#155dfc] hover:bg-blue-700 text-white text-sm h-11 font-medium transition-colors"
-            >
-              Add Pet
-            </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

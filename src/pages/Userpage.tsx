@@ -9,23 +9,22 @@ import Bookings from "./Bookings";
 
 function Userpage() {
   const [active, setActive] = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar active={active} setActive={setActive} />
+    <div className="flex h-screen overflow-hidden bg-gray-50">
+      {/* Sidebar - responsive and collapsible */}
+      <Sidebar active={active} setActive={setActive} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      <div className="flex flex-col flex-1 overflow-hidden ml-56">
-        <Navbar />
+      {/* Main layout content area */}
+      <div className="flex flex-col flex-1 overflow-hidden transition-all duration-300 md:ml-60">
+        <Navbar setSidebarOpen={setSidebarOpen} />
 
-        <main className="flex-1 overflow-y-auto bg-gray-50">
+        <main className="flex-1 overflow-y-auto">
           {active === "discover" && <Discover />}
           {active === "groomers" && <Groomers />}
           {active === "dashboard" && (
-            <Dashboard
-              totalbookings={6}
-              totalcustomers={7}
-              totalamount={300}
-            />
+            <Dashboard />
           )}
           {active === "mypets" && <MyPets />}
           {active === "bookings" && <Bookings/>}

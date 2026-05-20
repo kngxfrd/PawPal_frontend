@@ -103,22 +103,32 @@ const handleDelete = (id: string) => {
     setBookings(bookings.filter((booking) => booking.id !== id));
   };
   return (
-    <div className="flex flex-col px-10 py-6">
-      <div className="flex items-center justify-between mb-1">
-        <div>
-          <h1 className="text-[24px] font-bold">Bookings</h1>
-          <p className="text-[12px] text-gray-400">
-            view all your bookings
-          </p>
+    <div className="min-h-full w-full bg-[#f8fafc]">
+      <div className="flex flex-col px-4 md:px-8 py-8 gap-6 max-w-7xl mx-auto w-full font-sans">
+        
+        {/* Page Header */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-1.5">
+            <h1 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">
+              Bookings
+            </h1>
+            <p className="text-xs md:text-sm text-slate-400 font-medium">
+              View and manage all your scheduled bookings
+            </p>
+          </div>
+          <button
+            onClick={() => setOpen(true)}
+            className="bg-[#155dfc] hover:bg-blue-600 active:scale-98 transition-all duration-200 cursor-pointer flex items-center gap-2 text-white px-4.5 rounded-xl h-9.5 text-xs font-bold shadow-3xs hover:shadow-2xs"
+          >
+            Post Slot
+          </button>
         </div>
-        <button
-          onClick={() => setOpen(true)}
-          className="bg-[#155dfc] hover:bg-blue-700 transition-colors cursor-pointer flex items-center gap-2 text-white px-4 rounded-xl h-9 text-sm font-medium"
-        >
-          Post slot
-        </button>
+
+        {/* Data Table Wrapper */}
+        <div className="bg-white border border-slate-100 shadow-2xs rounded-2xl p-2 sm:p-4">
+          <DataTable columns={columns} data={bookings} emptyMessage="No bookings added yet" />
+        </div>
       </div>
-      <DataTable columns={columns} data={bookings} emptyMessage="No bookings added"/>
     </div>
   );
 }

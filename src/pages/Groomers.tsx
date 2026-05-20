@@ -44,43 +44,55 @@ function Groomers() {
   );
 
   return (
-    <div className=" px-15">
-      <div className="mt-5 mb-6">
-        <h1 className="text-[24px] font-bold">All Groomers</h1>
-        <p className="text-[12px] text-gray-500">
-          Find and book a groomer near you
-        </p>
-      </div>
+    <div className="min-h-full w-full bg-[#f8fafc]">
+      <div className="flex flex-col px-4 md:px-8 py-8 gap-6 max-w-7xl mx-auto w-full font-sans">
+        
+        {/* Page Header */}
+        <div className="flex flex-col gap-1.5">
+          <h1 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">
+            All Groomers
+          </h1>
+          <p className="text-xs md:text-sm text-slate-400 font-medium">
+            Find and book a groomer near you
+          </p>
+        </div>
 
-      <div className="relative mb-6">
-        <IoSearchOutline
-          className="absolute left-4 top-3.5 text-gray-400"
-          size={16}
-        />
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name or address..."
-          className="w-full h-11 pl-10 pr-4 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
-        />
-      </div>
-      {filtered.length === 0 && (
-        <p className="text-sm text-gray-400 text-center mt-10">
-          No groomers found.
-        </p>
-      )}
-      <div className="grid grid-cols-2 gap-5">
-        {filtered.map((groomer) => (
-          <Groomcard
-            key={groomer.id}
-            name={groomer.name}
-            address={groomer.address}
-            services={groomer.services}
-            phone={groomer.phone}
-            email={groomer.email}
-            openSlots={groomer.openSlots}
+        {/* Premium Search Bar */}
+        <div className="relative">
+          <IoSearchOutline
+            className="absolute left-4 top-3.5 text-slate-400"
+            size={16}
           />
-        ))}
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or address..."
+            className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-white text-sm shadow-2xs focus:outline-none focus:border-[#155dfc] focus:ring-1 focus:ring-blue-100 transition-all duration-200"
+          />
+        </div>
+
+        {/* Empty State */}
+        {filtered.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12 gap-3 text-center bg-white rounded-2xl border border-slate-100 shadow-2xs">
+            <p className="text-sm font-semibold text-slate-600">No groomers found</p>
+            <p className="text-xs text-slate-400">Try adjusting your search criteria</p>
+          </div>
+        )}
+
+        {/* Responsive Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filtered.map((groomer) => (
+            <Groomcard
+              key={groomer.id}
+              name={groomer.name}
+              address={groomer.address}
+              services={groomer.services}
+              phone={groomer.phone}
+              email={groomer.email}
+              openSlots={groomer.openSlots}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
