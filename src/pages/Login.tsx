@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { HiOutlineMail } from "react-icons/hi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import type { LoginPayload } from "../services/auth";
-import { loginUser } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [form, setForm] = useState<LoginPayload>({
     email: "",
     password: "",
@@ -25,17 +27,19 @@ function Login() {
     setError(null);
 
     try {
-      const data = await loginUser(form);
-      setSuccessMessage(` Welcome, ${data.user?.first_name ?? "there"}`);
-      setTimeout(() => navigate("/home"), 500);
-      console.log("Registered:", data);
+      const errMsg = await login(form.email, form.password);
+      if (errMsg) {
+        setError(errMsg);
+      } else {
+        setSuccessMessage("Welcome back!");
+        setTimeout(() => navigate("/home"), 500);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
   }
-  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

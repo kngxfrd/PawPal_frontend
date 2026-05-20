@@ -5,9 +5,11 @@ import { HiOutlineMail } from "react-icons/hi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FiUser, FiPhone } from "react-icons/fi";
 import type { RegisterPayload } from "../services/auth";
-import { register } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 function Signup() {
+  const { signup } = useAuth();
+  const navigate = useNavigate();
   const [role, setRole] = useState<"owner" | "groomer">("owner");
 
   const [form, setForm] = useState<RegisterPayload>({
@@ -35,20 +37,21 @@ function Signup() {
     setError(null);
 
     try {
-      const data = await register(form);
-
-      setSuccessMessage(
-        `Account created! Welcome, ${data.user?.first_name ?? "there"}`,
-      );
-      setTimeout(() => navigate("/"), 2500);
-      console.log("Registered:", data);
+      const errMsg = await signup({ ...form, role });
+      if (errMsg) {
+        setError(errMsg);
+      } else {
+        setSuccessMessage(
+          `Account created! Welcome, ${form.first_name || "there"}`
+        );
+        setTimeout(() => navigate("/home"), 1500);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
   }
-  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -67,6 +70,7 @@ function Signup() {
         <form onSubmit={handleSubmit}>
           <div className="flex gap-3">
             <button
+              type="button"
               onClick={() => setRole("owner")}
               className={`flex-1 h-10 rounded-xl border text-sm font-medium transition-colors
                 ${
@@ -78,6 +82,7 @@ function Signup() {
               Pet Owner
             </button>
             <button
+              type="button"
               onClick={() => setRole("groomer")}
               className={`flex-1 h-10 rounded-xl border text-sm font-medium transition-colors
                 ${
