@@ -10,9 +10,10 @@ interface Column {
 interface DataTableProps {
   columns: Column[];
   data: any[];
+  emptyMessage?: string;
 }
 
-function DataTable({ columns, data }: DataTableProps) {
+function DataTable({ columns, data, emptyMessage = "No data available" }: DataTableProps){
   return (
     <div className="mt-6 rounded-2xl shadow-sm overflow-hidden border border-gray-100">
       <table className="w-full">
@@ -30,21 +31,32 @@ function DataTable({ columns, data }: DataTableProps) {
         </thead>
 
         <tbody>
-          {data.map((row, index) => (
-            <tr
-              key={index}
-              className="border-b border-gray-100 hover:bg-blue-50/30 transition-colors"
-            >
-              {columns.map((column) => (
-                <td key={column.accessor} className="px-6 py-4 text-sm text-gray-600">
-                  {column.render
-                    ? column.render(row[column.accessor], row)
-                    : row[column.accessor]}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
+  {data.length === 0 ? (
+    <tr>
+      <td
+        colSpan={columns.length}
+        className="text-center py-5 text-sm text-gray-300"
+      >
+        {emptyMessage}
+      </td>
+    </tr>
+  ) : (
+    data.map((row, index) => (
+      <tr
+        key={index}
+        className="border-b border-gray-100 hover:bg-blue-50/30 transition-colors"
+      >
+        {columns.map((column) => (
+          <td key={column.accessor} className="px-6 py-4 text-sm text-gray-600">
+            {column.render
+              ? column.render(row[column.accessor], row)
+              : row[column.accessor]}
+          </td>
+        ))}
+      </tr>
+    ))
+  )}
+</tbody>
       </table>
     </div>
   );

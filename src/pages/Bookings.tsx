@@ -118,13 +118,7 @@ const handleDelete = (id: string) => {
           Post slot
         </button>
       </div>
-      {bookings.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-gray-300">
-          <p className="mt-3 text-sm">No pets added yet</p>
-        </div>
-      ) : (
-       <DataTable columns={columns} data={bookings} />
-      )}
+      <DataTable columns={columns} data={bookings} emptyMessage="No bookings added"/>
     </div>
   );
 }
