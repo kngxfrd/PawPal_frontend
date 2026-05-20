@@ -21,7 +21,7 @@ function Sidebar({ active, setActive }: SidebarProps) {
       </div>
 
 
-      <div className="flex flex-col gap-1 p-2 flex-1 pt-3">
+      <div className="flex flex-col gap-1 p-2 flex-1 ">
         <div
         className={`flex items-center w-full rounded-md h-9 justify-left pl-4 gap-2 cursor-pointer ${active === "dashboard" ? "bg-[#dbeafe] text-[#155dfc] " : "text-gray-600"}`}
         onClick={() => setActive("dashboard")}

@@ -107,8 +107,16 @@ const handleDelete = (id: string) => {
       <div className="flex items-center justify-between mb-1">
         <div>
           <h1 className="text-[24px] font-bold">Bookings</h1>
-          <p className="text-[12px] text-gray-400">View all your bookings</p>
+          <p className="text-[12px] text-gray-400">
+            view all your bookings
+          </p>
         </div>
+        <button
+          onClick={() => setOpen(true)}
+          className="bg-[#155dfc] hover:bg-blue-700 transition-colors cursor-pointer flex items-center gap-2 text-white px-4 rounded-xl h-9 text-sm font-medium"
+        >
+          Post slot
+        </button>
       </div>
       {bookings.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-gray-300">
