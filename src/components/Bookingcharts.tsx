@@ -1,15 +1,54 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { FiDownload } from "react-icons/fi";
+import type { Booking } from "../services/BookingSevice";
 
-const data = [
-  { month: "Jan", bookings: 4 },
-  { month: "Feb", bookings: 7 },
-  { month: "Mar", bookings: 5 },
-  { month: "Apr", bookings: 9 },
-  { month: "May", bookings: 6 },
-];
+interface BookingsChartProps {
+  bookings: Booking[];
+}
 
-function BookingsChart() {
+const getMonthName = (dateStr?: string) => {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) {
+    const parts = dateStr.split("-");
+    if (parts.length === 3) {
+      const year = parts[0].length === 4 ? parseInt(parts[0]) : parseInt(parts[2]);
+      const month = parseInt(parts[1]) - 1;
+      const day = parts[0].length === 4 ? parseInt(parts[2]) : parseInt(parts[0]);
+      const parsed = new Date(year, month, day);
+      if (!isNaN(parsed.getTime())) {
+        return parsed.toLocaleString("default", { month: "short" });
+      }
+    }
+    return null;
+  }
+  return d.toLocaleString("default", { month: "short" });
+};
+
+const getLastSixMonths = () => {
+  const months = [];
+  const d = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const temp = new Date(d.getFullYear(), d.getMonth() - i, 1);
+    months.push(temp.toLocaleString("default", { month: "short" }));
+  }
+  return months;
+};
+
+function BookingsChart({ bookings = [] }: BookingsChartProps) {
+  const lastSix = getLastSixMonths();
+  const chartData = lastSix.map((m) => ({ month: m, bookings: 0 }));
+
+  bookings.forEach((b) => {
+    const mName = getMonthName(b.slot_date);
+    if (mName) {
+      const found = chartData.find((a) => a.month === mName);
+      if (found) {
+        found.bookings += 1;
+      }
+    }
+  });
+
   return (
     <div className="bg-white rounded-2xl border border-slate-100 p-6 w-full flex flex-col gap-5">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -38,7 +77,7 @@ function BookingsChart() {
 
       <div className="w-full mt-2">
         <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorBookings" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%"  stopColor="#155dfc" stopOpacity={0.15} />

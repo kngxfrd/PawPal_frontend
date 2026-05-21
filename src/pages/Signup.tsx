@@ -176,7 +176,7 @@ function Signup() {
                 <label className="text-sm font-medium text-gray-600">
                   Password
                 </label>
-                <div className="flex items-center gap-3 h-11 rounded-xl border w-40 border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
+                <div className="relative flex items-center gap-3 h-11 rounded-xl border w-40 border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
                   <RiLockPasswordLine
                     size={15}
                     className="text-gray-400 shrink-0"
@@ -187,6 +187,28 @@ function Signup() {
                     required
                     type={showPassword ? "text" : "password"}
                     value={form.password}
+                    onChange={handleChange}
+                    placeholder="••••••••••"
+                    className="flex-1 bg-transparent text-sm outline-none "
+                  />
+                  
+                </div>
+              </div>
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-sm font-medium text-gray-600">
+                  Confirm Password
+                </label>
+                <div className="relative flex items-center gap-3 h-11 rounded-xl border w-40 border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
+                  <RiLockPasswordLine
+                    size={15}
+                    className="text-gray-400 shrink-0"
+                  />
+                  <input
+                    id="password_confirm"
+                    name="password_confirm"
+                    required
+                    type={showPassword ? "text" : "password"}
+                    value={form.password_confirm}
                     onChange={handleChange}
                     placeholder="••••••••••"
                     className="flex-1 bg-transparent text-sm outline-none "
@@ -202,27 +224,6 @@ function Signup() {
                       <IoEyeOutline size={18} />
                     )}
                   </button>
-                </div>
-              </div>
-              <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Confirm Password
-                </label>
-                <div className="flex items-center gap-3 h-11 rounded-xl border w-40 border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
-                  <RiLockPasswordLine
-                    size={15}
-                    className="text-gray-400 shrink-0"
-                  />
-                  <input
-                    id="password_confirm"
-                    name="password_confirm"
-                    required
-                    value={form.password_confirm}
-                    onChange={handleChange}
-                    type="password"
-                    placeholder="••••••••••"
-                    className="flex-1 bg-transparent text-sm outline-none "
-                  />
                 </div>
               </div>
             </div>

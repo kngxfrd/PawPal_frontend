@@ -60,18 +60,26 @@ function Discover() {
         console.error("Failed to load slots:", err);
       }
 
+      const slotGroomers = JSON.parse(localStorage.getItem("slot_groomers") || "{}");
+      const getSlotGroomerId = (s: Slot) => {
+        if (slotGroomers[String(s.id)]) {
+          return String(slotGroomers[String(s.id)]);
+        }
+        return s.groomer ? String(s.groomer) : "undefined";
+      };
+
       const fromShops: GroomerWithSlots[] = Object.values(shops).map((shop) => ({
         ...shop,
         slots: slots.filter(
-          (s) => String(s.groomer) === String(shop.groomerId) && s.is_available
+          (s) => getSlotGroomerId(s) === String(shop.groomerId) && !s.is_booked
         ),
       }));
 
       const knownIds = new Set(Object.values(shops).map((s) => String(s.groomerId)));
       const extraGroomers: GroomerWithSlots[] = [];
       slots.forEach((slot) => {
-        const gId = String(slot.groomer);
-        if (!knownIds.has(gId)) {
+        const gId = getSlotGroomerId(slot);
+        if (!knownIds.has(gId) && !slot.is_booked) {
           knownIds.add(gId);
           extraGroomers.push({
             groomerId: gId,
@@ -81,7 +89,7 @@ function Discover() {
             location: "",
             services: [],
             slots: slots.filter(
-              (s) => String(s.groomer) === gId && s.is_available
+              (s) => getSlotGroomerId(s) === gId && !s.is_booked
             ),
           });
         }
