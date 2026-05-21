@@ -76,7 +76,6 @@ function MyShop() {
         date: slotDate,
         start_time: startTime,
         end_time: endTime,
-        is_available: true,
       });
       setSlots((prev) => [...prev, slot]);
       setSlotDate("");

@@ -43,6 +43,7 @@ export interface Slot {
   date: string;
   start_time: string;
   end_time: string;
+  is_booked: boolean;
   is_available: boolean;
   groomer: number;
   groomer_name?: string;
@@ -52,7 +53,6 @@ export interface SlotPayload {
   date: string;
   start_time: string;
   end_time: string;
-  is_available?: boolean;
 }
 
 export async function getMySlots(): Promise<Slot[]> {

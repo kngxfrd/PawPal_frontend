@@ -47,7 +47,7 @@ function Groomers() {
         const fromShops: GroomerWithSlots[] = Object.values(shops).map((shop) => ({
           ...shop,
           slots: slots.filter(
-            (s) => String(s.groomer) === String(shop.groomerId) && s.is_available
+            (s) => String(s.groomer) === String(shop.groomerId)
           ),
         }));
 
@@ -66,7 +66,7 @@ function Groomers() {
               location: "",
               services: [],
               slots: slots.filter(
-                (s) => String(s.groomer) === gId && s.is_available
+                (s) => String(s.groomer) === gId
               ),
             });
           }
