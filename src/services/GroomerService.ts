@@ -36,6 +36,6 @@ export async function getAllGroomers(): Promise<Groomer[]> {
   const res = await safeRequest(`${BASE_URL}auth/groomers/`, { method: "GET" });
   if (!res.ok) throw new Error((await safeJson(res)).message || "Failed to fetch groomers");
   const data = await safeJson(res);
-  // handle both array and { groomers: [] } shapes
+  
   return Array.isArray(data) ? data : data.groomers ?? [];
 }

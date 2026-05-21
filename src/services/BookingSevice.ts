@@ -98,14 +98,14 @@ export interface BookingPayload {
   notes?: string;
 }
 
-// For pet owners — their own bookings
+
 export async function getMyBookings(): Promise<Booking[]> {
   const res = await safeRequest(`${BASE_URL}booking/bookings/`, { method: "GET" });
   if (!res.ok) throw new Error((await safeJson(res)).message || "Failed to fetch bookings");
   return safeJson(res);
 }
 
-// For groomers — correct endpoint from API docs
+
 export async function getGroomerBookings(): Promise<Booking[]> {
   const res = await safeRequest(`${BASE_URL}booking/groomer/bookings/`, { method: "GET" });
   if (!res.ok) throw new Error((await safeJson(res)).detail || (await safeJson(res)).message || "Failed to fetch groomer bookings");

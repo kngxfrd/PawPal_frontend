@@ -27,9 +27,9 @@ export async function initiateMomoPayment(
 
   const data = await response.json();
 
-  // Determine success from the payload, not the HTTP status.
-  // The backend can return non-2xx even for a successful simulation,
-  // and the body's `transaction.status` is the source of truth.
+  
+  
+  
   const isSuccessful =
     data?.transaction?.status === "successful" ||
     data?.success === true;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { TfiTrash } from "react-icons/tfi";
-import { FiPhone, FiMail, FiMapPin, FiPlus } from "react-icons/fi";
+import { FiMapPin, FiPlus } from "react-icons/fi";
 import { LuCalendar } from "react-icons/lu";
 import { getMySlots, createSlot, deleteSlot } from "../services/BookingSevice";
 import type { Slot } from "../services/BookingSevice";
@@ -67,27 +67,29 @@ async function saveShopToAPI(payload: {
   bio: string;
   location: string;
   is_available: boolean;
+  latitude?: number;
+  longitude?: number;
 }) {
-  // Try updating existing shop
+  
   const patchRes = await fetch(`${BASE_URL}registry/groomer/shop/me/`, {
     method: "PATCH",
     headers: getHeaders(),
     body: JSON.stringify(payload),
   });
 
-  // Existing shop updated successfully
+  
   if (patchRes.ok) {
     return safeJson(patchRes);
   }
 
-  // Read backend error
+  
   const patchError = await safeJson(patchRes);
 
   console.log("PATCH ERROR:", patchError);
 
-  // Shop does not exist yet
+  
   if (patchError.detail?.includes("You haven't set up your shop yet")) {
-    // Create new shop
+    
     const postRes = await fetch(`${BASE_URL}registry/groomer/shop/`, {
       method: "POST",
       headers: getHeaders(),
@@ -126,6 +128,21 @@ async function addServiceToAPI(name: string, price: string) {
   return safeJson(res);
 }
 
+async function geocodeLocation(locationStr: string): Promise<{ lat: number; lng: number } | null> {
+  if (!locationStr.trim()) return null;
+  
+  return new Promise((resolve) => {
+    const geocoder = new (window as any).google.maps.Geocoder();
+    geocoder.geocode({ address: locationStr }, (results: any, status: any) => {
+      if (status === "OK" && results[0]) {
+        const loc = results[0].geometry.location;
+        resolve({ lat: loc.lat(), lng: loc.lng() });
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
 function MyShop() {
   const [shopName, setShopName] = useState("");
   const [bio, setBio] = useState("");
@@ -176,28 +193,28 @@ function MyShop() {
   }, []);
 
   const saveProfile = async () => {
-    setProfileLoading(true);
-    setProfileError(null);
+  setProfileLoading(true);
+  setProfileError(null);
 
-    try {
-      await saveShopToAPI({
-        shop_name: shopName,
-        bio,
-        location,
-        is_available: isAvailable,
-      });
+  try {
+    const coords = await geocodeLocation(location);
 
-      setProfileSaved(true);
+    await saveShopToAPI({
+      shop_name: shopName,
+      bio,
+      location,
+      is_available: isAvailable,
+      ...(coords && { latitude: coords.lat, longitude: coords.lng }), // include if geocoded
+    });
 
-      setTimeout(() => {
-        setProfileSaved(false);
-      }, 2000);
-    } catch (err: any) {
-      setProfileError(err.message || "Failed to save profile");
-    } finally {
-      setProfileLoading(false);
-    }
-  };
+    setProfileSaved(true);
+    setTimeout(() => setProfileSaved(false), 2000);
+  } catch (err: any) {
+    setProfileError(err.message || "Failed to save profile");
+  } finally {
+    setProfileLoading(false);
+  }
+};
 
   const addService = async () => {
     if (!newService.trim() || !servicePrice.trim()) return;
