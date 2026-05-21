@@ -58,7 +58,7 @@ function Groomcard({
         </span>
       </div>
 
-      <div className="flex gap-1.5 flex-wrap">
+      <div className="flex flex-col gap-2">
         {services.map((service) => (
           <span key={service} className="px-2.5 h-6.5 rounded-lg bg-blue-50/60 text-[#155dfc] text-[11px] font-bold border border-blue-100/20 flex items-center tracking-wide">
             {service}

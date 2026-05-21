@@ -6,18 +6,138 @@ import { LuCalendar } from "react-icons/lu";
 import { getMySlots, createSlot, deleteSlot } from "../services/BookingSevice";
 import type { Slot } from "../services/BookingSevice";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+type Service = {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  price: string;
+  is_active: boolean;
+  created_at: string;
+};
+
+type Shop = {
+  id: number;
+  groomer_email: string;
+  shop_name: string;
+  bio: string;
+  location: string;
+  latitude: string;
+  longitude: string;
+  is_available: boolean;
+  services: Service[];
+  created_at: string;
+  updated_at: string;
+};
+
+function getHeaders() {
+  const token = localStorage.getItem("token");
+
+  return {
+    "Content-Type": "application/json",
+    ...(token && {
+      Authorization: `Bearer ${token}`,
+    }),
+  };
+}
+
+async function safeJson(res: Response) {
+  const text = await res.text();
+  return text ? JSON.parse(text) : {};
+}
+
+async function fetchMyShop(): Promise<Shop | null> {
+  const res = await fetch(`${BASE_URL}registry/groomer/shop/me/`, {
+    headers: getHeaders(),
+  });
+
+  if (res.status === 404) return null;
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch shop");
+  }
+
+  return safeJson(res);
+}
+
+async function saveShopToAPI(payload: {
+  shop_name: string;
+  bio: string;
+  location: string;
+  is_available: boolean;
+}) {
+  // Try updating existing shop
+  const patchRes = await fetch(`${BASE_URL}registry/groomer/shop/me/`, {
+    method: "PATCH",
+    headers: getHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  // Existing shop updated successfully
+  if (patchRes.ok) {
+    return safeJson(patchRes);
+  }
+
+  // Read backend error
+  const patchError = await safeJson(patchRes);
+
+  console.log("PATCH ERROR:", patchError);
+
+  // Shop does not exist yet
+  if (patchError.detail?.includes("You haven't set up your shop yet")) {
+    // Create new shop
+    const postRes = await fetch(`${BASE_URL}registry/groomer/shop/`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify(payload),
+    });
+
+    if (!postRes.ok) {
+      const postError = await safeJson(postRes);
+      console.log("POST ERROR:", postError);
+
+      throw new Error("Failed to create shop");
+    }
+
+    return safeJson(postRes);
+  }
+
+  throw new Error("Failed to save shop");
+}
+
+async function addServiceToAPI(name: string, price: string) {
+  const res = await fetch(`${BASE_URL}registry/groomer/services/`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({
+      name,
+      price,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorData = await safeJson(res);
+    console.log(errorData);
+    throw new Error("Failed to add service");
+  }
+
+  return safeJson(res);
+}
+
 function MyShop() {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
-
-  const shopKey = `shop_${currentUser.id}`;
-  const savedShop = JSON.parse(localStorage.getItem(shopKey) || "{}");
-
-  const [phone, setPhone] = useState(savedShop.phone || currentUser.phone_number || "");
-  const [email, setEmail] = useState(savedShop.email || currentUser.email || "");
-  const [location, setLocation] = useState(savedShop.location || "");
-  const [services, setServices] = useState<string[]>(savedShop.services || []);
+  const [shopName, setShopName] = useState("");
+  const [bio, setBio] = useState("");
+  const [location, setLocation] = useState("");
+  const [isAvailable, setIsAvailable] = useState(true);
+  const [services, setServices] = useState<Service[]>([]);
   const [newService, setNewService] = useState("");
+  const [servicePrice, setServicePrice] = useState("");
   const [profileSaved, setProfileSaved] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [shopLoading, setShopLoading] = useState(true);
 
   const [slots, setSlots] = useState<Slot[]>([]);
   const [slotOpen, setSlotOpen] = useState(false);
@@ -27,41 +147,74 @@ function MyShop() {
   const [slotLoading, setSlotLoading] = useState(false);
 
   useEffect(() => {
-    fetchSlots();
+    const init = async () => {
+      setShopLoading(true);
+
+      try {
+        const [shop, slotData] = await Promise.all([
+          fetchMyShop(),
+          getMySlots().catch(() => [] as Slot[]),
+        ]);
+
+        if (shop) {
+          setShopName(shop.shop_name || "");
+          setBio(shop.bio || "");
+          setLocation(shop.location || "");
+          setIsAvailable(shop.is_available);
+          setServices(shop.services || []);
+        }
+
+        setSlots(slotData ?? []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setShopLoading(false);
+      }
+    };
+
+    init();
   }, []);
 
-  const fetchSlots = async () => {
+  const saveProfile = async () => {
+    setProfileLoading(true);
+    setProfileError(null);
+
     try {
-      const data = await getMySlots();
-      setSlots(data ?? []);
-    } catch (err) {
-      console.error(err);
+      await saveShopToAPI({
+        shop_name: shopName,
+        bio,
+        location,
+        is_available: isAvailable,
+      });
+
+      setProfileSaved(true);
+
+      setTimeout(() => {
+        setProfileSaved(false);
+      }, 2000);
+    } catch (err: any) {
+      setProfileError(err.message || "Failed to save profile");
+    } finally {
+      setProfileLoading(false);
     }
   };
 
-  const saveProfile = () => {
-    const shopData = { phone, email, location, services };
-    localStorage.setItem(shopKey, JSON.stringify(shopData));
-  
-    const allShops = JSON.parse(localStorage.getItem("shops") || "{}");
-    allShops[String(currentUser.id)] = {
-      groomerId: String(currentUser.id),
-      groomerName: `${currentUser.first_name ?? ""} ${currentUser.last_name ?? ""}`.trim(),
-      phone,
-      email,
-      location,
-      services,
-    };
-    localStorage.setItem("shops", JSON.stringify(allShops));
-    setProfileSaved(true);
-    setTimeout(() => setProfileSaved(false), 2000);
-  };
+  const addService = async () => {
+    if (!newService.trim() || !servicePrice.trim()) return;
 
-  const addService = () => {
-    if (!newService.trim()) return;
-    const updated = [...services, newService.trim()];
-    setServices(updated);
-    setNewService("");
+    try {
+      const service = await addServiceToAPI(
+        newService.trim(),
+        servicePrice.trim(),
+      );
+
+      setServices((prev) => [...prev, service.name]);
+
+      setNewService("");
+      setServicePrice("");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const removeService = (index: number) => {
@@ -76,6 +229,7 @@ function MyShop() {
         date: slotDate,
         start_time: startTime,
         end_time: endTime,
+        is_booked: false,
       });
       setSlots((prev) => [...prev, slot]);
       setSlotDate("");
@@ -98,9 +252,16 @@ function MyShop() {
     }
   };
 
+  if (shopLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-sm text-gray-400">Loading shop...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col px-10 py-6 gap-6">
-
       <div>
         <h1 className="text-[24px] font-bold">My Shop</h1>
         <p className="text-[12px] text-gray-400">
@@ -109,32 +270,32 @@ function MyShop() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-
+        {/* Shop Profile Card */}
         <div className="bg-white border border-slate-100 rounded-2xl shadow-2xs p-6 flex flex-col gap-4">
           <h2 className="text-[15px] font-bold text-slate-800">Shop Profile</h2>
 
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-600 flex items-center gap-1.5">
-                <FiPhone size={13} /> Phone Number
+              <label className="text-sm font-medium text-gray-600">
+                Shop Name
               </label>
+
               <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="eg. 0201234567"
+                value={shopName}
+                onChange={(e) => setShopName(e.target.value)}
+                placeholder="eg. Kings Pet Grooming"
                 className="h-11 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-600 flex items-center gap-1.5">
-                <FiMail size={13} /> Email
-              </label>
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="h-11 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
+              <label className="text-sm font-medium text-gray-600">Bio</label>
+
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder="Tell customers about your grooming service"
+                className="rounded-xl border border-gray-200 p-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc] min-h-[100px]"
               />
             </div>
 
@@ -151,16 +312,57 @@ function MyShop() {
             </div>
           </div>
 
+          <div className="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3">
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-slate-700">
+                Available for Booking
+              </span>
+
+              <span className="text-xs text-gray-400">
+                Customers can book your slots
+              </span>
+            </div>
+
+            <input
+              type="checkbox"
+              checked={isAvailable}
+              onChange={(e) => setIsAvailable(e.target.checked)}
+              className="w-4 h-4"
+            />
+          </div>
+
+          <button
+            onClick={saveProfile}
+            disabled={profileLoading}
+            className="w-full h-11 rounded-xl bg-[#155dfc] hover:bg-blue-700 text-white text-sm font-medium transition-colors mt-auto disabled:opacity-60"
+          >
+            {profileLoading
+              ? "Saving..."
+              : profileSaved
+                ? "✓ Saved!"
+                : "Save Profile"}
+          </button>
+          {/* Services */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-600">Services Offered</label>
+            <label className="text-sm font-medium text-gray-600">
+              Services Offered
+            </label>
             <div className="flex gap-2">
               <input
                 value={newService}
                 onChange={(e) => setNewService(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && addService()}
-                placeholder="eg. Pet Washing"
+                placeholder="Service Name"
                 className="flex-1 h-10 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
               />
+
+              <input
+                type="number"
+                value={servicePrice}
+                onChange={(e) => setServicePrice(e.target.value)}
+                placeholder="Price"
+                className="w-28 h-10 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
+              />
+
               <button
                 onClick={addService}
                 className="h-10 px-4 rounded-xl bg-[#155dfc] text-white text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-1"
@@ -169,37 +371,35 @@ function MyShop() {
               </button>
             </div>
 
-            {services.length > 0 && (
+            {services.map((service, index) => (
               <div className="flex flex-wrap gap-2 mt-1">
-                {services.map((service, index) => (
-                  <span
-                    key={index}
-                    className="flex items-center gap-1.5 px-3 h-7 rounded-lg bg-blue-50 text-[#155dfc] text-xs font-bold border border-blue-100"
+                <span
+                  key={index}
+                  className="flex items-center gap-1.5 px-3 h-7 rounded-lg bg-blue-50 text-[#155dfc] text-xs font-bold border border-blue-100"
+                >
+                  {service.name} - GH₵ {service.price}
+                  <button
+                    onClick={() => removeService(index)}
+                    className="hover:text-red-500 transition-colors"
                   >
-                    {service}
-                    <button
-                      onClick={() => removeService(index)}
-                      className="hover:text-red-500 transition-colors"
-                    >
-                      <IoClose size={12} />
-                    </button>
-                  </span>
-                ))}
+                    <IoClose size={12} />
+                  </button>
+                </span>
               </div>
-            )}
+            ))}
           </div>
 
-          <button
-            onClick={saveProfile}
-            className="w-full h-11 rounded-xl bg-[#155dfc] hover:bg-blue-700 text-white text-sm font-medium transition-colors mt-auto"
-          >
-            {profileSaved ? "✓ Saved!" : "Save Profile"}
-          </button>
+          {profileError && (
+            <p className="text-xs text-rose-500">{profileError}</p>
+          )}
         </div>
 
+        {/* Slots Card */}
         <div className="bg-white border border-slate-100 rounded-2xl shadow-2xs p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-[15px] font-bold text-slate-800">Available Slots</h2>
+            <h2 className="text-[15px] font-bold text-slate-800">
+              Available Slots
+            </h2>
             <button
               onClick={() => setSlotOpen(true)}
               className="flex items-center gap-1.5 px-3 h-8 rounded-xl bg-[#155dfc] text-white text-xs font-bold hover:bg-blue-700 transition-colors"
@@ -234,12 +434,12 @@ function MyShop() {
                   <div className="flex items-center gap-3">
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wide ${
-                        slot.is_available
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                          : "bg-rose-50 text-rose-700 border-rose-100"
+                        slot.is_booked
+                          ? "bg-rose-50 text-rose-700 border-rose-100"
+                          : "bg-emerald-50 text-emerald-700 border-emerald-100"
                       }`}
                     >
-                      {slot.is_available ? "Open" : "Booked"}
+                      {slot.is_booked ? "Booked" : "Open"}
                     </span>
                     <button
                       onClick={() => handleDeleteSlot(slot.id)}
@@ -255,6 +455,7 @@ function MyShop() {
         </div>
       </div>
 
+      {/* Add Slot Modal */}
       {slotOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white rounded-2xl shadow-xl w-[400px] p-6 flex flex-col gap-4">
@@ -274,7 +475,9 @@ function MyShop() {
 
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-600">Date</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Date
+                </label>
                 <input
                   type="date"
                   value={slotDate}

@@ -1,5 +1,3 @@
-
-
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function getHeaders() {
@@ -37,14 +35,12 @@ async function safeRequest(url: string, options: RequestInit): Promise<Response>
   return response;
 }
 
-
 export interface Slot {
   id: number;
   date: string;
   start_time: string;
   end_time: string;
   is_booked: boolean;
-  is_available: boolean;
   groomer: number;
   groomer_name?: string;
 }
@@ -53,6 +49,7 @@ export interface SlotPayload {
   date: string;
   start_time: string;
   end_time: string;
+  is_booked?: boolean;
 }
 
 export async function getMySlots(): Promise<Slot[]> {
@@ -81,7 +78,6 @@ export async function deleteSlot(id: number): Promise<void> {
   if (!res.ok) throw new Error((await safeJson(res)).message || "Failed to delete slot");
 }
 
-
 export interface Booking {
   id: number;
   slot: number;
@@ -102,9 +98,17 @@ export interface BookingPayload {
   notes?: string;
 }
 
+// For pet owners — their own bookings
 export async function getMyBookings(): Promise<Booking[]> {
   const res = await safeRequest(`${BASE_URL}booking/bookings/`, { method: "GET" });
   if (!res.ok) throw new Error((await safeJson(res)).message || "Failed to fetch bookings");
+  return safeJson(res);
+}
+
+// For groomers — correct endpoint from API docs
+export async function getGroomerBookings(): Promise<Booking[]> {
+  const res = await safeRequest(`${BASE_URL}booking/groomer/bookings/`, { method: "GET" });
+  if (!res.ok) throw new Error((await safeJson(res)).detail || (await safeJson(res)).message || "Failed to fetch groomer bookings");
   return safeJson(res);
 }
 

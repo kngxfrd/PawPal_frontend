@@ -5,28 +5,55 @@ import { LuDollarSign, LuCalendarDays } from "react-icons/lu";
 import BookingsChart from "../components/Bookingcharts";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useAuth } from "../context/AuthContext";
-
-interface Booking {
-  id: string;
-  groomer: string;
-  pet: string;
-  date: string;
-  time: string;
-  status: string;
-}
+import { getMyBookings, getGroomerBookings } from "../services/BookingSevice";
+import type { Booking } from "../services/BookingSevice";
 
 function Dashboard() {
   const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const isGroomer = currentUser.role === "groomer";
 
   useEffect(() => {
-    const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-    setBookings(storedBookings);
-  }, []);
+    const fetchBookings = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = isGroomer ? await getGroomerBookings() : await getMyBookings();
+        setBookings(data ?? []);
+      } catch (err: any) {
+        console.error("Dashboard failed to load bookings:", err);
+        setError(err.message || "Failed to load bookings");
+        
+        // Fallback to localStorage mock data if API fails during setup
+        const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+        setBookings(storedBookings);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBookings();
+  }, [isGroomer]);
 
   const dynamicBookingsCount = bookings.length;
-  const dynamicGroomersCount = new Set(bookings.filter(b => b.groomer).map(b => b.groomer)).size;
-  const dynamicAmount = bookings.length * 50;
+  
+  // Total Amount Paid: Count of confirmed or completed bookings * ₵50
+  const dynamicAmount = bookings.filter(
+    (b) => b.status?.toLowerCase() === "confirmed" || b.status?.toLowerCase() === "completed"
+  ).length * 50;
+
+  // Active Groomers: count from localStorage shops registry or distinct groomers in bookings
+  const shops = JSON.parse(localStorage.getItem("shops") || "{}");
+  const shopsCount = Object.keys(shops).length;
+  const distinctGroomers = new Set(
+    bookings.filter((b) => b.groomer_name).map((b) => b.groomer_name)
+  ).size;
+  const dynamicGroomersCount = isGroomer
+    ? 1
+    : Math.max(shopsCount, distinctGroomers);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -68,6 +95,14 @@ function Dashboard() {
     month: "long",
     day: "numeric",
   });
+
+  const upcomingBookings = [...bookings]
+    .filter((b) => b.status?.toLowerCase() !== "cancelled")
+    .sort((a, b) => {
+      const dateA = new Date(`${a.slot_date || "1970-01-01"} ${a.slot_start_time || "00:00"}`);
+      const dateB = new Date(`${b.slot_date || "1970-01-01"} ${b.slot_start_time || "00:00"}`);
+      return dateA.getTime() - dateB.getTime();
+    });
 
   return (
     <div className="min-h-screen w-full bg-[#f8fafc]">
@@ -138,7 +173,7 @@ function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <div className="lg:col-span-2 bg-white border border-slate-100 shadow-2xs rounded-2xl">
-            <BookingsChart />
+            <BookingsChart bookings={bookings} />
           </div>
 
           <div className="bg-white border border-slate-100 shadow-2xs rounded-2xl p-6 flex flex-col gap-5">
@@ -147,7 +182,11 @@ function Dashboard() {
               <p className="text-xs text-slate-400 font-medium">Scheduled grooming sessions</p>
             </div>
 
-            {bookings.length === 0 ? (
+            {loading ? (
+              <p className="text-xs text-slate-400 text-center py-8">Loading upcoming sessions...</p>
+            ) : error && bookings.length === 0 ? (
+              <p className="text-xs text-rose-400 text-center py-8">{error}</p>
+            ) : upcomingBookings.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 gap-3 text-center">
                 <div className="w-10 h-10 bg-slate-50 border border-slate-100 text-slate-400 rounded-full flex items-center justify-center">
                   <LuCalendarDays size={16} />
@@ -159,9 +198,15 @@ function Dashboard() {
               </div>
             ) : (
               <div className="flex flex-col divide-y divide-slate-100 max-h-[360px] overflow-y-auto pr-1">
-                {bookings.map((booking) => {
-                  const petColorClass = getPetColor(booking.pet);
-                  const statusBadgeClass = getStatusBadge(booking.status);
+                {upcomingBookings.map((booking) => {
+                  const displayName = isGroomer
+                    ? (booking.owner_name ?? "Pet Owner")
+                    : (booking.groomer_name ?? "Groomer");
+                  const displayPet = booking.pet_name ?? "Pet";
+                  const displayDate = booking.slot_date ?? "—";
+                  const displayTime = booking.slot_start_time ?? "—";
+                  const petColorClass = getPetColor(displayPet);
+                  const statusBadgeClass = getStatusBadge(booking.status || "pending");
 
                   return (
                     <div 
@@ -170,23 +215,23 @@ function Dashboard() {
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold border text-sm shadow-3xs ${petColorClass}`}>
-                          {(booking.pet || "P").charAt(0).toUpperCase()}
+                          {displayPet.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex flex-col gap-0.5">
                           <span className="text-xs font-bold text-slate-800 leading-tight">
-                            {booking.groomer}
+                            {displayName}
                           </span>
                           <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-semibold">
-                            <span className="text-slate-500">{booking.pet}</span>
+                            <span className="text-slate-500">{displayPet}</span>
                             <span>•</span>
-                            <span>{booking.date}</span>
+                            <span>{displayDate} @ {displayTime}</span>
                           </div>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2">
                         <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md border ${statusBadgeClass}`}>
-                          {booking.status}
+                          {booking.status || "pending"}
                         </span>
                         <button 
                           type="button" 
