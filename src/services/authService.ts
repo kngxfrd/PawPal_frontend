@@ -8,7 +8,7 @@ async function safeJson(response: Response) {
 }
 
 function saveAuthData(data: AuthResponse) {
-  const token = data?.token;
+  const token = (data as any)?.tokens?.access || data?.token || (data as any)?.access;
   const role = data?.user?.role;
 
   if (token) localStorage.setItem("token", token);

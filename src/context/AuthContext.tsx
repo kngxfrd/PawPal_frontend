@@ -33,8 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string): Promise<string | null> => {
     try {
       const res = await apiLogin({ email, password });
-      
-      // Merge in any previously saved local profile details for this email
+ 
       const savedProfiles = JSON.parse(localStorage.getItem("pawpal_user_profiles") || "{}");
       const localProfile = savedProfiles[email.toLowerCase()] || {};
       
@@ -60,8 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = async (payload: RegisterPayload): Promise<string | null> => {
     try {
       const res = await apiRegister(payload);
-      
-      // Save profile persistently locally for this email
+ 
       const savedProfiles = JSON.parse(localStorage.getItem("pawpal_user_profiles") || "{}");
       const fullName = `${payload.first_name || ""} ${payload.last_name || ""}`.trim();
       savedProfiles[payload.email.toLowerCase()] = {
@@ -97,8 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const newUserData = { ...user, ...updatedFields };
       setUser(newUserData);
       localStorage.setItem("currentUser", JSON.stringify(newUserData));
-      
-      // Sync into the persistent map
+
       const savedProfiles = JSON.parse(localStorage.getItem("pawpal_user_profiles") || "{}");
       savedProfiles[user.email.toLowerCase()] = {
         ...savedProfiles[user.email.toLowerCase()],

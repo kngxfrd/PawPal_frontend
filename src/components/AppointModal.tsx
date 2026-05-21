@@ -2,36 +2,36 @@ import { useState } from "react";
 import { FiCalendar, FiClock } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { LuPawPrint } from "react-icons/lu";
-
-interface Slot {
-  date: string;
-  time: string;
-}
+import { createBooking } from "../services/BookingSevice";
+import { getPets } from "../services/petService";
+import type { Slot } from "../services/BookingSevice";
 
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  groomerName: string | undefined ;
+  groomerName: string | undefined;
+  groomerId: number;
   pets: string[];
   availableSlots: Slot[];
-  onConfirm: (booking: { pet: string; slot: Slot; notes: string }) => void;
+  onConfirm: () => void;
 }
+
 function AppointModal({
   isOpen,
   onClose,
   groomerName,
-  availableSlots,
   pets,
+  availableSlots,
   onConfirm,
 }: BookingModalProps) {
-  const [selectedPet, setSelectedPet] = useState("");
+  const [selectedPetName, setSelectedPetName] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-
-  const handleConfirm = () => {
-    if (!selectedPet) {
+  const handleConfirm = async () => {
+    if (!selectedPetName) {
       setError("Please select a pet");
       return;
     }
@@ -39,27 +39,39 @@ function AppointModal({
       setError("Please select a slot");
       return;
     }
-    const newBooking = {
-      id: crypto.randomUUID().slice(0, 4).toUpperCase(),
-      groomer: groomerName,
-      pet: selectedPet,
-      date: selectedSlot.date,
-      time: selectedSlot.time,
-      status: "pending",
-    };
 
-    const existing = JSON.parse(localStorage.getItem("bookings") || "[]");
-    localStorage.setItem("bookings", JSON.stringify([...existing, newBooking]));
-
-    onConfirm({ pet: selectedPet, slot: selectedSlot, notes });
-    setSelectedPet("");
-    setSelectedSlot(null);
-    setNotes("");
+    setLoading(true);
     setError("");
-    onClose();
+
+    try {
+      const allPets = await getPets();
+      const pet = allPets.find((p) => p.name === selectedPetName);
+      if (!pet) {
+        setError("Could not find selected pet. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      await createBooking({
+        slot: selectedSlot.id,
+        pet: pet.id,
+        notes,
+      });
+
+      setSelectedPetName("");
+      setSelectedSlot(null);
+      setNotes("");
+      setError("");
+      onConfirm();
+    } catch (err: any) {
+      setError(err.message || "Failed to create booking");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-white rounded-2xl shadow-xl w-[480px] p-6 flex flex-col gap-5">
@@ -87,50 +99,40 @@ function AppointModal({
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-600">
-            Select Pet
-          </label>
+          <label className="text-sm font-medium text-gray-600">Select Pet</label>
           <select
-            value={selectedPet}
-            onChange={(e) => setSelectedPet(e.target.value)}
+            value={selectedPetName}
+            onChange={(e) => setSelectedPetName(e.target.value)}
             className="h-11 rounded-xl border border-gray-200 pl-4 bg-gray-50 text-sm focus:outline-none focus:border-[#155dfc]"
           >
-            <option value="" disabled>
-              Choose a pet...
-            </option>
+            <option value="" disabled>Choose a pet...</option>
             {pets.map((pet) => (
-              <option key={pet} value={pet}>
-                {pet}
-              </option>
+              <option key={pet} value={pet}>{pet}</option>
             ))}
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-600">
-            Select Slot
-          </label>
+          <label className="text-sm font-medium text-gray-600">Select Slot</label>
           {availableSlots.length === 0 ? (
-            <p className="text-sm text-red-400">No available slots</p>
+            <p className="text-sm text-rose-400">No available slots from this groomer</p>
           ) : (
             <div className="grid grid-cols-2 gap-2">
-              {availableSlots.map((slot, index) => (
+              {availableSlots.map((slot) => (
                 <button
-                  key={index}
+                  key={slot.id}
                   type="button"
                   onClick={() => setSelectedSlot(slot)}
-                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm transition-colors
-                    ${
-                      selectedSlot?.date === slot.date &&
-                      selectedSlot?.time === slot.time
-                        ? "border-[#155dfc] bg-blue-50 text-[#155dfc] font-medium"
-                        : "border-gray-200 text-gray-600 hover:border-[#155dfc]"
-                    }`}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm transition-colors ${
+                    selectedSlot?.id === slot.id
+                      ? "border-[#155dfc] bg-blue-50 text-[#155dfc] font-medium"
+                      : "border-gray-200 text-gray-600 hover:border-[#155dfc]"
+                  }`}
                 >
                   <FiCalendar size={13} className="shrink-0" />
                   <span>{slot.date}</span>
                   <FiClock size={13} className="shrink-0 ml-auto" />
-                  <span>{slot.time}</span>
+                  <span>{slot.start_time}</span>
                 </button>
               ))}
             </div>
@@ -162,9 +164,10 @@ function AppointModal({
           </button>
           <button
             onClick={handleConfirm}
-            className="flex-1 h-11 rounded-xl bg-[#155dfc] hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+            disabled={loading}
+            className="flex-1 h-11 rounded-xl bg-[#155dfc] hover:bg-blue-700 text-white text-sm font-medium transition-colors disabled:opacity-60"
           >
-            Confirm Booking
+            {loading ? "Booking..." : "Confirm Booking"}
           </button>
         </div>
       </div>

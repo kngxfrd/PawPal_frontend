@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { LuPawPrint } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineMail } from "react-icons/hi";
@@ -8,6 +9,7 @@ import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState<LoginPayload>({
     email: "",
@@ -52,17 +54,11 @@ function Login() {
             </div>
             <p className="text-gray-400 text-sm">Welcome back</p>
           </div>
-          {/* {error && (
-            <p className="text-red-500 text-xs bg-red-50 px-3 py-2 rounded-lg">
-              {error}
-            </p>
-          )} */}
+
           {error && <p style={{ color: "red", fontSize: "12px" }}>{error}</p>}
-              {successMessage && (
-                <p style={{ color: "green", fontSize: "12px" }} >
-                  {successMessage}
-                </p>
-              )}
+          {successMessage && (
+            <p style={{ color: "green", fontSize: "12px" }}>{successMessage}</p>
+          )}
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-600">Email</label>
@@ -89,21 +85,34 @@ function Login() {
                   Forgot Password?
                 </p>
               </div>
-              <div className="flex items-center gap-3 h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
+              <div className="relative flex items-center gap-3 h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 focus-within:border-[#155dfc]">
                 <RiLockPasswordLine
                   size={16}
                   className="text-gray-400 shrink-0"
                 />
+
                 <input
                   id="password"
                   name="password"
                   required
                   value={form.password}
                   onChange={handleChange}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••••"
-                  className="flex-1 bg-transparent text-sm outline-none"
+                  className="flex-1 bg-transparent text-sm outline-none pr-8"
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <IoEyeOffOutline size={18} />
+                  ) : (
+                    <IoEyeOutline size={18} />
+                  )}
+                </button>
               </div>
             </div>
           </div>
