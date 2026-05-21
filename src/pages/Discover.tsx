@@ -39,7 +39,7 @@ function Discover() {
   const [groomers, setGroomers] = useState<GroomerWithSlots[]>([]);
   const [selected, setSelected] = useState<GroomerWithSlots | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [petNames, setPetNames] = useState<string[]>([]);
+  const [petNames] = useState<string[]>([]);
 
   useEffect(() => {
     if (navigator.geolocation) {
