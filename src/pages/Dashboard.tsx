@@ -28,7 +28,7 @@ function Dashboard() {
         console.error("Dashboard failed to load bookings:", err);
         setError(err.message || "Failed to load bookings");
         
-        // Fallback to localStorage mock data if API fails during setup
+        
         const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
         setBookings(storedBookings);
       } finally {
@@ -40,12 +40,12 @@ function Dashboard() {
 
   const dynamicBookingsCount = bookings.length;
   
-  // Total Amount Paid: Count of confirmed or completed bookings * ₵50
+  
   const dynamicAmount = bookings.filter(
     (b) => b.status?.toLowerCase() === "confirmed" || b.status?.toLowerCase() === "completed"
   ).length * 50;
 
-  // Active Groomers: count from localStorage shops registry or distinct groomers in bookings
+  
   const shops = JSON.parse(localStorage.getItem("shops") || "{}");
   const shopsCount = Object.keys(shops).length;
   const distinctGroomers = new Set(

@@ -3,8 +3,14 @@ import { useState, useEffect } from "react";
 import AppointModal from "../components/AppointModal";
 import { getAvailableSlots } from "../services/BookingSevice";
 import type { Slot } from "../services/BookingSevice";
-import { getPets } from "../services/petService";
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+function getHeaders() {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+}
 interface Location {
   lat: number;
   lng: number;
@@ -48,63 +54,56 @@ function Discover() {
       );
     }
 
-    const load = async () => {
-      const shops: Record<string, Shop> = JSON.parse(
-        localStorage.getItem("shops") || "{}"
-      );
 
-      let slots: Slot[] = [];
-      try {
-        slots = await getAvailableSlots();
-      } catch (err) {
-        console.error("Failed to load slots:", err);
-      }
+const load = async () => {
 
-      const slotGroomers = JSON.parse(localStorage.getItem("slot_groomers") || "{}");
-      const getSlotGroomerId = (s: Slot) => {
-        if (slotGroomers[String(s.id)]) {
-          return String(slotGroomers[String(s.id)]);
-        }
-        return s.groomer ? String(s.groomer) : "undefined";
-      };
+  let shops: GroomerWithSlots[] = [];
+  try {
+    const res = await fetch(`${BASE_URL}registry/groomer/shops/`, {
+      headers: getHeaders(),
+    });
+    const data: Array<{
+      id: number;
+      shop_name: string;
+      bio: string;
+      location: string;
+      latitude: number;
+      longitude: number;
+      distance_km: number;
+    }> = await res.json();
 
-      const fromShops: GroomerWithSlots[] = Object.values(shops).map((shop) => ({
-        ...shop,
-        slots: slots.filter(
-          (s) => getSlotGroomerId(s) === String(shop.groomerId) && !s.is_booked
-        ),
-      }));
+    shops = data.map((s) => ({
+      groomerId: String(s.id),
+      groomerName: s.shop_name,
+      phone: "",
+      email: "",
+      location: s.location,
+      services: [],
+      lat: s.latitude || undefined,
+      lng: s.longitude || undefined,
+      slots: [],
+    }));
+  } catch (err) {
+    console.error("Failed to load shops:", err);
+  }
 
-      const knownIds = new Set(Object.values(shops).map((s) => String(s.groomerId)));
-      const extraGroomers: GroomerWithSlots[] = [];
-      slots.forEach((slot) => {
-        const gId = getSlotGroomerId(slot);
-        if (!knownIds.has(gId) && !slot.is_booked) {
-          knownIds.add(gId);
-          extraGroomers.push({
-            groomerId: gId,
-            groomerName: slot.groomer_name ?? `Groomer #${gId}`,
-            phone: "",
-            email: "",
-            location: "",
-            services: [],
-            slots: slots.filter(
-              (s) => getSlotGroomerId(s) === gId && !s.is_booked
-            ),
-          });
-        }
-      });
+  let slots: Slot[] = [];
+  try {
+    slots = await getAvailableSlots();
+  } catch (err) {
+    console.error("Failed to load slots:", err);
+  }
 
-      setGroomers([...fromShops, ...extraGroomers]);
+  const groomersWithSlots = shops.map((g) => ({
+    ...g,
+    slots: slots.filter(
+      (s) => String(s.groomer) === g.groomerId && !s.is_booked
+    ),
+  }));
 
-      try {
-        const pets = await getPets();
-        setPetNames(pets.map((p) => p.name));
-      } catch {
-        const local = JSON.parse(localStorage.getItem("pets") || "[]");
-        setPetNames(local.map((p: any) => p.name));
-      }
-    };
+  setGroomers(groomersWithSlots);
+
+};
 
     load();
   }, []);

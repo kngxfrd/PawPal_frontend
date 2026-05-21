@@ -125,7 +125,7 @@ function Groomers() {
         setLoading(false);
       }
 
-      // Load pet names separately so a pet fetch failure doesn't block groomers
+      
       try {
         const pets = await getPets();
         setPetNames(pets.map((p) => p.name));

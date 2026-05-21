@@ -18,7 +18,7 @@ function Bookings() {
   const [error, setError] = useState<string | null>(null);
   const [tip, setTip] = useState<number | null>(null);
 
-  // Payment state
+  
   const [payingId, setPayingId] = useState<number | null>(null);
   const [paymentResult, setPaymentResult] = useState<PaymentResponse | null>(
     null,
@@ -63,7 +63,7 @@ function Bookings() {
     setRetryBooking(booking);
     try {
       const result = await initiateMomoPayment(booking.id);
-      // On success the backend confirms the booking — update it in state
+      
       if (result.success) {
         setBookings((prev) =>
           prev.map((b) =>
@@ -73,7 +73,7 @@ function Bookings() {
       }
       setPaymentResult(result);
     } catch (err: any) {
-      // Backend failure: surface message + transaction if present
+      
       setPaymentResult({
         success: false,
         message: err.message || "Payment failed. Please try again.",
@@ -108,7 +108,7 @@ function Bookings() {
 
   const PayButton = ({ booking }: { booking: Booking }) => {
     const isPaying = payingId === booking.id;
-    // Only show on pending bookings
+    
     if (booking.status !== "pending") return null;
     return (
       <button
